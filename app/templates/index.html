@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Платформа анализа данных — Главная</title>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo">ML</div>
+        <div class="brand-text">
+          <strong>Платформа анализа данных</strong>
+          <span>Визуальный конструктор ML-пайплайнов</span>
+        </div>
+      </div>
+
+      <input class="menu-toggle" type="checkbox" id="menu" aria-hidden="true" />
+
+      <nav aria-label="Основная навигация">
+        <a class="navlink active" href="index.html">Главная</a>
+        <a class="navlink" href="manual.html">Ручное обучение</a>
+        <a class="navlink active" href="/automatic-learning">Автоматическое обучение</a>
+        <a class="navlink" href="builder.html">Конструктор</a>
+        <a class="navlink" href="account.html">Личный кабинет</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn" href="builder.html">Открыть конструктор</a>
+        <a class="btn primary" href="account.html">Войти</a>
+      </div>
+
+      <label class="menu-btn" for="menu" aria-label="Открыть меню">
+        <i></i>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <div class="stage">
+      <section class="hero" aria-label="Главный экран">
+        <div class="badge"><span class="dot"></span> ГЛАВНАЯ</div>
+
+        <h1>
+          Добро пожаловать на платформу для анализа данных и построения пайплайна обучения моделей машинного обучения на основе визуального конструктора.
+        </h1>
+
+        <div class="actions" aria-label="Выбор режима обучения">
+          <a class="action" href="automatic_learning.html" aria-label="Перейти в автоматическое обучение">
+            <small>Быстрый старт</small>
+            <div class="title">Обучить модель автоматически</div>
+            <p class="desc">Подбор модели и параметров по данным.</p>
+          </a>
+
+          <a class="jump" href="automatic_learning.html" aria-label="Открыть автоматическое обучение">→</a>
+
+          <a class="action" href="manual.html" aria-label="Перейти в ручное обучение">
+            <small>Полный контроль</small>
+            <div class="title">Обучить модель вручную</div>
+            <p class="desc">Явная настройка признаков, алгоритма и метрик.</p>
+          </a>
+
+          <a class="jump" href="manual.html" aria-label="Открыть ручное обучение">→</a>
+        </div>
+      </section>
+
+      <div class="blank" aria-hidden="true"></div>
+    </div>
+  </main>
+</body>
+</html>

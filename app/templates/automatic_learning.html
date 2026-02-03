@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Automatic Learning — AutoML Pipeline</title>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">ML</div>
+      <div class="brand-text">
+        <strong>Платформа анализа данных</strong>
+        <span>Визуальный конструктор ML-пайплайнов</span>
+      </div>
+    </div>
+
+    <input class="menu-toggle" type="checkbox" id="menu" aria-hidden="true" />
+
+    <nav>
+      <a class="navlink" href="/">Главная</a>
+      <a class="navlink active" href="/automatic-learning">Автоматическое обучение</a>
+      <a class="navlink" href="#">Ручное обучение</a>
+      <a class="navlink" href="#">Конструктор</a>
+      <a class="navlink" href="#">Личный кабинет</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="btn" href="#">Конструктор</a>
+      <a class="btn primary" href="#">Войти</a>
+    </div>
+
+    <label class="menu-btn" for="menu"><i></i></label>
+  </div>
+</header>
+
+<main>
+  <div class="stage">
+    <section class="hero" style="max-width:1200px;">
+
+      <!-- TOP -->
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="badge"><span class="dot"></span> AutoML Pipeline</div>
+          <h1 style="font-size:48px; max-width:none;">
+            Dataset → Target → AutoML Pipeline
+          </h1>
+          <p class="desc" style="max-width:70ch;">
+            Локальная обработка в браузере. Мы читаем только заголовок файла,
+            чтобы показать колонки.
+          </p>
+        </div>
+
+        <div class="badge" style="background:#0e3b24; color:#7dffb3;">
+          STEP 1–3 · CONFIGURE & TRAIN
+        </div>
+      </div>
+
+      <!-- GRID -->
+      <div style="
+        margin-top:48px;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:32px;
+      ">
+
+        <!-- STEP 1 -->
+        <div style="
+          border:1px solid var(--line);
+          border-radius:24px;
+          padding:28px;
+        ">
+          <small>ШАГ 1 · ИСТОЧНИК ДАННЫХ</small>
+          <h3 style="margin:10px 0;">Загрузите датасет</h3>
+
+          <p class="desc">
+            CSV с первой строкой-заголовком; парсим только колонки.
+          </p>
+
+          <div class="jump" style="
+            width:100%;
+            height:auto;
+            padding:28px;
+            margin-top:24px;
+            text-align:center;
+          ">
+            ↑ Перетащите файл или кликните чтобы выбрать
+            <p class="desc">Поддержка .csv · локально · без отправки</p>
+          </div>
+
+          <p class="desc" style="margin-top:18px;">
+            Пример: features, target, date, id…<br>
+            Размер до ~50 МБ
+          </p>
+
+          <hr style="margin:20px 0; border:none; border-top:1px solid var(--line);">
+
+          <p class="desc">
+            Файл: submission (1).csv<br>
+            Строк: 2068 · Колонок: 1
+          </p>
+
+          <span class="badge" style="margin-top:12px; background:#0e3b24; color:#7dffb3;">
+            Схема прочитана · можно выбрать target
+          </span>
+        </div>
+
+        <!-- STEP 2–3 -->
+        <div style="
+          border:1px solid var(--line);
+          border-radius:24px;
+          padding:28px;
+        ">
+          <small>ШАГ 2–3 · ТАРГЕТ И ПРИЗНАКИ</small>
+          <h3 style="margin:10px 0;">Выберите target и исключения</h3>
+
+          <p class="desc">
+            Целевая переменная и колонки, которые нельзя использовать для обучения.
+          </p>
+
+          <label style="display:block; margin-top:18px; font-weight:700;">
+            Целевая переменная *
+          </label>
+          <div class="jump" style="
+            width:100%;
+            height:auto;
+            padding:16px;
+            margin-top:8px;
+          ">
+            — выберите колонку —
+          </div>
+
+          <p class="desc" style="margin-top:16px;">
+            Отметьте ID-колонки, утечки таргета, служебные поля и т.д.
+          </p>
+
+          <div style="
+            margin-top:12px;
+            padding:14px;
+            border:1px dashed var(--line);
+            border-radius:14px;
+          ">
+            <strong>0</strong>
+            <label style="margin-left:10px;">
+              <input type="checkbox"> исключить
+            </label>
+          </div>
+
+          <span class="badge" style="margin-top:18px;">
+            FEATURE SPACE
+          </span>
+        </div>
+
+      </div>
+
+      <!-- FOOTER ACTIONS -->
+      <div style="
+        margin-top:48px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:16px;
+      ">
+        <a class="btn" href="#">Расширенные настройки</a>
+
+        <div>
+          <p class="desc" style="margin-bottom:6px;">
+            AutoML режим: <strong>FULL SEARCH</strong> · CV · ансамбли · explainability
+          </p>
+          <a class="btn primary" href="#" style="padding:14px 28px;">
+            ОБУЧИТЬ МОДЕЛЬ
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="blank"></div>
+  </div>
+</main>
+</body>
+</html>
