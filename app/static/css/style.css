@@ -338,3 +338,34 @@
       .jump{ display:none; }
       h1{ max-width: 20ch; }
     }
+
+    .jump > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+    }
+
+    /* Прогресс-бар */
+    .progress-bar {
+    width: 100%;
+    max-width: 100%;
+    }
+
+    /* Уведомление */
+    #notification {
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+    }
