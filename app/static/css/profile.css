@@ -8,6 +8,26 @@
   padding: 0 20px;
 }
 
+/*
+  Profile page layout:
+  The shared layout (.stage) uses a 2-column grid with a right "blank" column.
+  On the profile page this visually shifts all blocks to the left.
+  Override it locally (this file is only included on /profile).
+*/
+.stage {
+  grid-template-columns: 1fr;
+}
+
+.blank {
+  display: none;
+}
+
+.hero {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .profile-hero {
   text-align: center;
   padding: 40px 20px 32px;
@@ -562,8 +582,16 @@
     width: 100px;
     height: 100px;
   }
+
+  .profile-top__inner {
+  text-align: center;
+  }
   
   .profile-name {
-    font-size: 24px;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
   }
-}
+
+

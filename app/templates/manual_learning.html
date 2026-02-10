@@ -1,121 +1,126 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ручное обучение — AutoML Pipeline</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ручное обучение — AutoML Pipeline</title>
 
-<link rel="stylesheet" href="/static/css/style.css">
-<link rel="stylesheet" href="/static/css/manual_learning.css">
+  <!-- вернул общий стиль (шрифты, h1, хедер, базовые компоненты) -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/manual_learning.css">
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
 <header>
-<div class="header-inner">
+  <div class="header-inner">
 
-<div class="brand">
-<div class="logo">ML</div>
-<div class="brand-text">
-<strong>Платформа анализа данных</strong>
-<span>Визуальный конструктор ML-пайплайнов</span>
-</div>
-</div>
+    <div class="brand">
+      <div class="logo">ML</div>
+      <div class="brand-text">
+        <strong>Платформа анализа данных</strong>
+        <span>Визуальный конструктор ML-пайплайнов</span>
+      </div>
+    </div>
 
-<input class="menu-toggle" type="checkbox" id="menu" aria-hidden="true" />
+    <input class="menu-toggle" type="checkbox" id="menu" aria-hidden="true" />
 
-<nav>
-<a class="navlink" href="/">Главная</a>
-<a class="navlink" href="/automatic-learning">Автоматическое обучение</a>
-<a class="navlink active" href="/manual-learning">Ручное обучение</a>
-<a class="navlink" href="#">Конструктор</a>
-<a class="navlink" href="#">Личный кабинет</a>
-</nav>
+    <nav>
+      <a class="navlink" href="/">Главная</a>
+      <a class="navlink" href="/automatic-learning">Автоматическое обучение</a>
+      <a class="navlink active" href="/manual-learning">Ручное обучение</a>
+      <a class="navlink" href="#">Конструктор</a>
+      <a class="navlink" href="#">Личный кабинет</a>
+    </nav>
 
-<div class="header-actions">
-<a class="btn" href="#">Конструктор</a>
-<a class="btn primary" href="#">Войти</a>
-</div>
+    <div class="header-actions">
+      <a class="btn" href="#">Конструктор</a>
+      <a class="btn primary" href="#">Войти</a>
+    </div>
 
-<label class="menu-btn" for="menu"><i></i></label>
-</div>
+    <label class="menu-btn" for="menu"><i></i></label>
+  </div>
 </header>
 
 <main>
-<div class="stage">
-<section class="hero">
+  <div class="stage">
+    <section class="hero">
 
-<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-<div>
-<div class="badge"><span class="dot"></span> Manual Learning</div>
-<h1>Ручное обучение моделей</h1>
-<p class="desc">
-Детальная настройка каждого шага пайплайна: предобработка, кодирование, шкалирование и выбор модели.
-</p>
-</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div class="badge"><span class="dot"></span> Manual Learning</div>
+          <h1>Ручное обучение моделей</h1>
+          <p class="desc">
+            Детальная настройка каждого шага пайплайна: предобработка, кодирование, шкалирование и выбор модели.
+          </p>
+        </div>
 
-<div class="badge" style="background:#0e3b24; color:#7dffb3;">
-STEP 1–5 · MANUAL CONFIGURATION
-</div>
-</div>
+        <div class="badge" style="background:#0e3b24; color:#7dffb3;">
+          STEP 1–5 · MANUAL CONFIGURATION
+        </div>
+      </div>
 
-<div class="layout">
-<!-- ЛЕВАЯ КОЛОНКА: ОБЗОР ДАННЫХ + BOXPlots -->
-<div class="panel">
-<div class="panel-header">
-<div>
-<div class="panel-title">Обзор данных</div>
-<div class="panel-subtitle">Первые строки и базовая статистика по датасету.</div>
-</div>
-<div class="panel-badge">Dataset preview</div>
-</div>
+      <!-- SLIDES -->
+      <div class="manual-slides" id="manualSlides" data-step="1">
+        <!-- SLIDE 1 -->
+        <div class="manual-slide active" data-step="1" aria-hidden="false">
+          <div class="layout">
+            <!-- LEFT: обзор + boxplot -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Обзор данных</div>
+                  <div class="panel-subtitle">Первые строки и базовая статистика по датасету.</div>
+                </div>
+                <div class="panel-badge">Dataset preview</div>
+              </div>
 
-<div class="dataset-meta">
-<div class="dataset-chip"><strong>Файл:</strong> customer_scoring.csv</div>
-<div class="dataset-chip"><strong>Shape:</strong> (120 000, 42)</div>
-<div class="dataset-chip"><strong>Target:</strong> default_flag</div>
-</div>
+              <div class="dataset-meta">
+                <div class="dataset-chip"><strong>Файл:</strong> customer_scoring.csv</div>
+                <div class="dataset-chip"><strong>Shape:</strong> (120 000, 42)</div>
+                <div class="dataset-chip"><strong>Target:</strong> default_flag</div>
+              </div>
 
-<div class="tabs" id="dataTabs">
-<button type="button" class="tab-btn active" data-tab="head">head(5)</button>
-<button type="button" class="tab-btn" data-tab="shape">shape</button>
-<button type="button" class="tab-btn" data-tab="info">info()</button>
-<button type="button" class="tab-btn" data-tab="describe">describe()</button>
-<button type="button" class="tab-btn" data-tab="isna">isna().sum()</button>
-<button type="button" class="tab-btn" data-tab="dup">duplicated()</button>
-</div>
+              <div class="tabs" id="dataTabs">
+                <button type="button" class="tab-btn active" data-tab="head">head(5)</button>
+                <button type="button" class="tab-btn" data-tab="shape">shape</button>
+                <button type="button" class="tab-btn" data-tab="info">info()</button>
+                <button type="button" class="tab-btn" data-tab="describe">describe()</button>
+                <button type="button" class="tab-btn" data-tab="isna">isna().sum()</button>
+                <button type="button" class="tab-btn" data-tab="dup">duplicated()</button>
+              </div>
 
-<div class="tab-content">
-<div class="tab-pane active" data-tab-content="head">
-<table class="preview-table">
-<thead>
-<tr>
-<th>customer_id</th>
-<th>age</th>
-<th>income</th>
-<th>region</th>
-<th>limit_used</th>
-<th>default_flag</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>C001</td><td>32</td><td>78000</td><td>South</td><td>0.42</td><td>0</td></tr>
-<tr><td>C002</td><td>45</td><td>120000</td><td>North</td><td>0.11</td><td>0</td></tr>
-<tr><td>C003</td><td>29</td><td>56000</td><td>South</td><td>0.81</td><td>1</td></tr>
-<tr><td>C004</td><td>52</td><td>98000</td><td>Center</td><td>0.63</td><td>0</td></tr>
-<tr><td>C005</td><td>36</td><td>67000</td><td>South</td><td>0.27</td><td>0</td></tr>
-</tbody>
-</table>
-</div>
+              <div class="tab-content">
+                <div class="tab-pane active" data-tab-content="head">
+                  <table class="preview-table">
+                    <thead>
+                      <tr>
+                        <th>customer_id</th>
+                        <th>age</th>
+                        <th>income</th>
+                        <th>region</th>
+                        <th>limit_used</th>
+                        <th>default_flag</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>C001</td><td>32</td><td>78000</td><td>South</td><td>0.42</td><td>0</td></tr>
+                      <tr><td>C002</td><td>45</td><td>120000</td><td>North</td><td>0.11</td><td>0</td></tr>
+                      <tr><td>C003</td><td>29</td><td>56000</td><td>South</td><td>0.81</td><td>1</td></tr>
+                      <tr><td>C004</td><td>52</td><td>98000</td><td>Center</td><td>0.63</td><td>0</td></tr>
+                      <tr><td>C005</td><td>36</td><td>67000</td><td>South</td><td>0.27</td><td>0</td></tr>
+                    </tbody>
+                  </table>
+                </div>
 
-<div class="tab-pane" data-tab-content="shape">
-<pre class="code-block">(120000, 42)</pre>
-</div>
+                <div class="tab-pane" data-tab-content="shape">
+                  <pre class="code-block">(120000, 42)</pre>
+                </div>
 
-<div class="tab-pane" data-tab-content="info">
-<pre class="code-block">&lt;class 'pandas.core.frame.DataFrame'&gt;
+                <div class="tab-pane" data-tab-content="info">
+                  <pre class="code-block">&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 120000 entries, 0 to 119999
 Data columns (total 42 columns):
 #   Column         Non-Null Count   Dtype
@@ -124,16 +129,12 @@ Data columns (total 42 columns):
 1   age            119872 non-null  float64
 2   income         118954 non-null  float64
 3   region         120000 non-null  object
-4   segment        120000 non-null  object
 ...
-40  limit_used     120000 non-null  float64
-41  default_flag   120000 non-null  int64
-dtypes: float64(20), int64(2), object(20)
-memory usage: 38.4+ MB</pre>
-</div>
+41  default_flag   120000 non-null  int64</pre>
+                </div>
 
-<div class="tab-pane" data-tab-content="describe">
-<pre class="code-block">           age        income     limit_used
+                <div class="tab-pane" data-tab-content="describe">
+                  <pre class="code-block">           age        income     limit_used
 count  119872.0  118954.0  120000.00
 mean       39.7   78000.3       0.41
 std        11.6   26500.7       0.23
@@ -142,312 +143,346 @@ min        18.0   15000.0       0.00
 50%        39.0   76000.0       0.40
 75%        48.0   94000.0       0.56
 max        75.0  250000.0       1.00</pre>
-</div>
+                </div>
 
-<div class="tab-pane" data-tab-content="isna">
-<pre class="code-block">customer_id       0
-age             128
+                <div class="tab-pane" data-tab-content="isna">
+                  <pre class="code-block">age             128
 income         1046
-region            0
-segment           0
 ...
-limit_used        0
-default_flag      0
 dtype: int64</pre>
-</div>
+                </div>
 
-<div class="tab-pane" data-tab-content="dup">
-<pre class="code-block">df.duplicated().sum()  # 0
+                <div class="tab-pane" data-tab-content="dup">
+                  <pre class="code-block">df.duplicated().sum()  # 0
 df.duplicated(subset=['customer_id']).sum()  # 12</pre>
-</div>
-</div>
+                </div>
+              </div>
 
-<div class="panel-header" style="margin-top: 24px;">
-<div>
-<div class="panel-title">Boxplot и диапазоны значений</div>
-<div class="panel-subtitle">Настройка усечения выбросов по ключевым числовым полям.</div>
-</div>
-<div class="panel-badge">Outliers</div>
-</div>
+              <div class="panel-header" style="margin-top: 24px;">
+                <div>
+                  <div class="panel-title">Boxplot и диапазоны значений</div>
+                  <div class="panel-subtitle">Настройка усечения выбросов по ключевым числовым полям.</div>
+                </div>
+                <div class="panel-badge">Outliers</div>
+              </div>
 
-<div class="card">
-<div class="boxplot-grid">
-<div class="boxplot-row">
-<div>
-<div class="field-label">Поле</div>
-<select>
-<option>income</option>
-<option>age</option>
-<option>limit_used</option>
-</select>
-</div>
-<div>
-<div class="field-label">Минимум (ниже → усечь)</div>
-<input type="number" placeholder="например, 10 000" />
-</div>
-<div>
-<div class="field-label">Максимум (выше → усечь)</div>
-<input type="number" placeholder="например, 200 000" />
-</div>
-</div>
+              <div class="card">
+                <div class="boxplot-grid">
+                  <div class="boxplot-row">
+                    <div>
+                      <div class="field-label">Поле</div>
+                      <select>
+                        <option>income</option>
+                        <option>age</option>
+                        <option>limit_used</option>
+                      </select>
+                    </div>
+                    <div>
+                      <div class="field-label">Минимум (ниже → усечь)</div>
+                      <input type="number" placeholder="например, 10 000" />
+                    </div>
+                    <div>
+                      <div class="field-label">Максимум (выше → усечь)</div>
+                      <input type="number" placeholder="например, 200 000" />
+                    </div>
+                  </div>
 
-<div class="boxplot-row">
-<div>
-<div class="field-label">Поле</div>
-<select>
-<option>age</option>
-<option>income</option>
-<option>limit_used</option>
-</select>
-</div>
-<div>
-<div class="field-label">Минимум</div>
-<input type="number" placeholder="18" />
-</div>
-<div>
-<div class="field-label">Максимум</div>
-<input type="number" placeholder="75" />
-</div>
-</div>
-</div>
+                  <div class="boxplot-row">
+                    <div>
+                      <div class="field-label">Поле</div>
+                      <select>
+                        <option>age</option>
+                        <option>income</option>
+                        <option>limit_used</option>
+                      </select>
+                    </div>
+                    <div>
+                      <div class="field-label">Минимум</div>
+                      <input type="number" placeholder="18" />
+                    </div>
+                    <div>
+                      <div class="field-label">Максимум</div>
+                      <input type="number" placeholder="75" />
+                    </div>
+                  </div>
+                </div>
 
-<div class="boxplot-preview">
-Мок-превью boxplot: здесь в реальном интерфейсе будут распределения и whiskers.
-Бизнес видит, какие значения считаются аномальными и как с ними будут обходиться.
-</div>
-</div>
-</div>
+                <div class="boxplot-preview">
+                  Мок-превью boxplot: здесь в реальном интерфейсе будут распределения и whiskers.
+                  Бизнес видит, какие значения считаются аномальными и как с ними будут обходиться.
+                </div>
+              </div>
+            </div>
 
-<!-- ПРАВАЯ КОЛОНКА: ПРЕДОБРАБОТКА + КОДИРОВАНИЕ + МОДЕЛИ -->
-<div class="panel">
-<div class="panel-header">
-<div>
-<div class="panel-title">Предобработка данных</div>
-<div class="panel-subtitle">Заполнение пропусков и удаление дублей.</div>
-</div>
-<div class="panel-badge">Preprocessing</div>
-</div>
+            <!-- RIGHT: голубой моковый дашборд -->
+            <div class="mock-dashboard" aria-label="Моковые дашборды">
+              <div class="mock-dashboard__inner">
+                <div class="mock-chart">
+                  <svg viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0,110 L40,95 L80,118 L120,60 L160,105 L200,90 L240,115 L280,75 L320,98 L360,68 L400,120 L440,84 L480,96 L520,70 L560,112 L600,88" />
+                  </svg>
+                </div>
+                <div class="mock-chart">
+                  <svg viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0,120 L50,100 L100,130 L150,85 L200,140 L250,95 L300,115 L350,70 L400,125 L450,90 L500,110 L550,78 L600,120" />
+                  </svg>
+                </div>
+                <div class="mock-chart mock-chart--small">
+                  <svg viewBox="0 0 600 110" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0,85 L80,70 L160,92 L240,60 L320,88 L400,55 L480,86 L560,62 L600,80" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<div class="two-col">
-<div class="card">
-<div class="card-title">Пропуски в числовых полях</div>
-<div class="card-sub">Единая стратегия заполнения или отдельные правила на поле.</div>
-<div class="field-label">Глобальная стратегия <span class="req">*</span></div>
-<select id="missingStrategy">
-<option value="mean">Средним значением по столбцу</option>
-<option value="zero">Нулём</option>
-<option value="min">Минимальным значением</option>
-<option value="max">Максимальным значением</option>
-</select>
-<div class="options-row">
-<span class="option-pill">Пример: income → mean</span>
-<span class="option-pill">limit_used → 0</span>
-</div>
-</div>
+        <!-- SLIDE 2 -->
+        <div class="manual-slide" data-step="2" aria-hidden="true">
+          <div class="layout">
+            <!-- LEFT: preprocessing + encoding -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Предобработка данных</div>
+                  <div class="panel-subtitle">Заполнение пропусков и удаление дублей.</div>
+                </div>
+                <div class="panel-badge">Preprocessing</div>
+              </div>
 
-<div class="card">
-<div class="card-title">Дубликаты записей</div>
-<div class="card-sub">
-Используем ключ (например, <code>customer_id</code>) для поиска дублей и оставляем первую запись.
-</div>
-<div class="switch-row">
-<span class="switch-label-main">Удалить дубли по customer_id</span>
-<label class="switch">
-<input type="checkbox" checked />
-<span class="switch-slider"></span>
-</label>
-</div>
-<div class="switch-row">
-<span class="switch-label-main">Удалить полные дубликаты строк</span>
-<label class="switch">
-<input type="checkbox" />
-<span class="switch-slider"></span>
-</label>
-</div>
-</div>
-</div>
+              <div class="two-col">
+                <div class="card">
+                  <div class="card-title">Пропуски в числовых полях</div>
+                  <div class="card-sub">Единая стратегия заполнения или отдельные правила на поле.</div>
+                  <div class="field-label">Глобальная стратегия <span class="req">*</span></div>
+                  <select id="missingStrategy">
+                    <option value="mean">Средним значением по столбцу</option>
+                    <option value="zero">Нулём</option>
+                    <option value="min">Минимальным значением</option>
+                    <option value="max">Максимальным значением</option>
+                  </select>
+                  <div class="options-row">
+                    <span class="option-pill">Пример: income → mean</span>
+                    <span class="option-pill">limit_used → 0</span>
+                  </div>
+                </div>
 
-<div class="panel-header" style="margin-top: 24px;">
-<div>
-<div class="panel-title">Кодирование & шкалирование</div>
-<div class="panel-subtitle">Подготовка категорий и масштаба числовых признаков.</div>
-</div>
-<div class="panel-badge">Encoding & Scaling</div>
-</div>
+                <div class="card">
+                  <div class="card-title">Дубликаты записей</div>
+                  <div class="card-sub">
+                    Используем ключ (например, <code>customer_id</code>) для поиска дублей и оставляем первую запись.
+                  </div>
+                  <div class="switch-row">
+                    <span class="switch-label-main">Удалить дубли по customer_id</span>
+                    <label class="switch">
+                      <input type="checkbox" checked />
+                      <span class="switch-slider"></span>
+                    </label>
+                  </div>
+                  <div class="switch-row" style="margin-bottom:0;">
+                    <span class="switch-label-main">Удалить полные дубликаты строк</span>
+                    <label class="switch">
+                      <input type="checkbox" />
+                      <span class="switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-<div class="two-col">
-<div class="card">
-<div class="card-title">Кодирование категориальных признаков</div>
-<div class="field-label">Тип кодирования <span class="req">*</span></div>
-<select id="encodingType">
-<option value="onehot">OneHotEncoder</option>
-<option value="target">TargetEncoder</option>
-<option value="ordinal">OrdinalEncoder</option>
-<option value="hash">HashingEncoder</option>
-</select>
-<div class="encoding-desc" id="encodingDesc">
-OneHotEncoder — безопасный выбор, если категорий немного. Признаки превращаются в бинарные колонки 0/1.
-</div>
-</div>
+              <div class="panel-header" style="margin-top: 24px;">
+                <div>
+                  <div class="panel-title">Кодирование & шкалирование</div>
+                  <div class="panel-subtitle">Подготовка категорий и масштаба числовых признаков.</div>
+                </div>
+                <div class="panel-badge">Encoding & Scaling</div>
+              </div>
 
-<div class="card">
-<div class="card-title">Шкалирование числовых признаков</div>
-<div class="field-label">Метод шкалирования</div>
-<select id="scalingType">
-<option value="none">Без шкалирования (пропустить шаг)</option>
-<option value="standard">StandardScaler</option>
-<option value="minmax">MinMaxScaler</option>
-<option value="robust">RobustScaler</option>
-</select>
-<div class="scaling-desc" id="scalingDesc">
-Без шкалирования — подходит для деревьев и бустингов. Для линейных моделей и kNN шкалирование желательно.
-</div>
-</div>
-</div>
+              <div class="two-col">
+                <div class="card">
+                  <div class="card-title">Кодирование категориальных признаков</div>
+                  <div class="field-label">Тип кодирования <span class="req">*</span></div>
+                  <select id="encodingType">
+                    <option value="onehot">OneHotEncoder</option>
+                    <option value="target">TargetEncoder</option>
+                    <option value="ordinal">OrdinalEncoder</option>
+                    <option value="hash">HashingEncoder</option>
+                  </select>
+                  <div class="encoding-desc" id="encodingDesc">
+                    OneHotEncoder — безопасный выбор, если категорий немного. Признаки превращаются в бинарные колонки 0/1.
+                  </div>
+                </div>
 
-<div class="panel-header" style="margin-top: 24px;">
-<div>
-<div class="panel-title">Тип модели и гиперпараметры</div>
-<div class="panel-subtitle">Выбор базового алгоритма и режим подбора параметров.</div>
-</div>
-<div class="panel-badge">Models & HParams</div>
-</div>
+                <div class="card">
+                  <div class="card-title">Шкалирование числовых признаков</div>
+                  <div class="field-label">Метод шкалирования</div>
+                  <select id="scalingType">
+                    <option value="none">Без шкалирования (пропустить шаг)</option>
+                    <option value="standard">StandardScaler</option>
+                    <option value="minmax">MinMaxScaler</option>
+                    <option value="robust">RobustScaler</option>
+                  </select>
+                  <div class="scaling-desc" id="scalingDesc">
+                    Без шкалирования — подходит для деревьев и бустингов. Для линейных моделей и kNN шкалирование желательно.
+                  </div>
+                </div>
+              </div>
+            </div>
 
-<div class="model-grid" id="modelGrid">
-<label class="model-card active" data-model="linear">
-<input type="radio" name="modelType" value="linear" class="radio-hidden" checked />
-<div class="model-name">
-Линейная модель
-<span class="model-tag">Baseline</span>
-</div>
-<div class="model-text">
-Простая, быстрая и хорошо интерпретируемая. Подходит, если эффект признаков примерно линейный.
-</div>
-</label>
+            <!-- RIGHT: models + hparams -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Тип модели и гиперпараметры</div>
+                  <div class="panel-subtitle">Выбор базового алгоритма и режим подбора параметров.</div>
+                </div>
+                <div class="panel-badge">Models & HParams</div>
+              </div>
 
-<label class="model-card" data-model="trees">
-<input type="radio" name="modelType" value="trees" class="radio-hidden" />
-<div class="model-name">
-Деревья решений / RandomForest
-<span class="model-tag">Non-linear</span>
-</div>
-<div class="model-text">
-Захватывают нелинейные зависимости и взаимодействия признаков. Меньше требований к шкалированию.
-</div>
-</label>
+              <div class="model-grid" id="modelGrid">
+                <label class="model-card active" data-model="linear">
+                  <input type="radio" name="modelType" value="linear" class="radio-hidden" checked />
+                  <div class="model-name">
+                    Линейная модель
+                    <span class="model-tag">Baseline</span>
+                  </div>
+                  <div class="model-text">
+                    Простая, быстрая и хорошо интерпретируемая. Подходит, если эффект признаков примерно линейный.
+                  </div>
+                </label>
 
-<label class="model-card" data-model="catboost">
-<input type="radio" name="modelType" value="catboost" class="radio-hidden" />
-<div class="model-name">
-CatBoost
-<span class="model-tag">Production</span>
-</div>
-<div class="model-text">
-Градиентный бустинг с поддержкой категорий. Часто даёт лучший баланс качества и стабильности.
-</div>
-</label>
-</div>
+                <label class="model-card" data-model="trees">
+                  <input type="radio" name="modelType" value="trees" class="radio-hidden" />
+                  <div class="model-name">
+                    Деревья решений / RandomForest
+                    <span class="model-tag">Non-linear</span>
+                  </div>
+                  <div class="model-text">
+                    Захватывают нелинейные зависимости и взаимодействия признаков. Меньше требований к шкалированию.
+                  </div>
+                </label>
 
-<div class="mode-toggle-row">
-<span>Режим гиперпараметров:</span>
-<div style="display:flex; align-items:center; gap:12px;">
-<span class="mode-pill" id="modeAutoPill">Auto search</span>
-<div style="display:flex; align-items:center; gap:8px;">
-<span style="font-size:13px; color:rgba(11,18,32,.70);">Ручная настройка</span>
-<label class="switch">
-<input type="checkbox" id="manualToggle" />
-<span class="switch-slider"></span>
-</label>
-</div>
-</div>
-</div>
+                <label class="model-card" data-model="catboost">
+                  <input type="radio" name="modelType" value="catboost" class="radio-hidden" />
+                  <div class="model-name">
+                    CatBoost
+                    <span class="model-tag">Production</span>
+                  </div>
+                  <div class="model-text">
+                    Градиентный бустинг с поддержкой категорий. Часто даёт лучший баланс качества и стабильности.
+                  </div>
+                </label>
+              </div>
 
-<!-- Блоки параметров -->
-<div class="params-block visible" id="params-linear">
-<div class="param-label">Линейная модель · подсказки</div>
-<div class="params-grid">
-<div>
-<div class="param-label">Регуляризация C</div>
-<input type="number" step="0.1" placeholder="например, 1.0" />
-<div class="param-hint">Меньше — сильнее штраф, модель проще.</div>
-</div>
-<div>
-<div class="param-label">Penalty</div>
-<select>
-<option>l2</option>
-<option>l1</option>
-<option>elasticnet</option>
-</select>
-<div class="param-hint">Контролирует тип регуляризации.</div>
-</div>
-</div>
-</div>
+              <div class="mode-toggle-row">
+                <span>Режим гиперпараметров:</span>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="mode-pill" id="modeAutoPill">Auto search</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:rgba(11,18,32,.70);">Ручная настройка</span>
+                    <label class="switch">
+                      <input type="checkbox" id="manualToggle" />
+                      <span class="switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-<div class="params-block" id="params-trees">
-<div class="param-label">Деревья / RandomForest · подсказки</div>
-<div class="params-grid">
-<div>
-<div class="param-label">n_estimators</div>
-<input type="number" placeholder="100" />
-<div class="param-hint">Количество деревьев в ансамбле.</div>
-</div>
-<div>
-<div class="param-label">max_depth</div>
-<input type="number" placeholder="None / 6 / 8" />
-<div class="param-hint">Глубина дерева. Больше — риск переобучения.</div>
-</div>
-</div>
-</div>
+              <div class="params-block visible" id="params-linear">
+                <div class="param-label">Линейная модель · подсказки</div>
+                <div class="params-grid">
+                  <div>
+                    <div class="param-label">Регуляризация C</div>
+                    <input type="number" step="0.1" placeholder="например, 1.0" />
+                    <div class="param-hint">Меньше — сильнее штраф, модель проще.</div>
+                  </div>
+                  <div>
+                    <div class="param-label">Penalty</div>
+                    <select>
+                      <option>l2</option>
+                      <option>l1</option>
+                      <option>elasticnet</option>
+                    </select>
+                    <div class="param-hint">Контролирует тип регуляризации.</div>
+                  </div>
+                </div>
+              </div>
 
-<div class="params-block" id="params-catboost">
-<div class="param-label">CatBoost · подсказки</div>
-<div class="params-grid">
-<div>
-<div class="param-label">learning_rate</div>
-<input type="number" step="0.01" placeholder="0.03" />
-<div class="param-hint">Шаг обучения. Чем меньше, тем стабильнее, но дольше обучение.</div>
-</div>
-<div>
-<div class="param-label">depth</div>
-<input type="number" placeholder="6" />
-<div class="param-hint">Глубина деревьев. Типичные значения: 4–8.</div>
-</div>
-</div>
-</div>
+              <div class="params-block" id="params-trees">
+                <div class="param-label">Деревья / RandomForest · подсказки</div>
+                <div class="params-grid">
+                  <div>
+                    <div class="param-label">n_estimators</div>
+                    <input type="number" placeholder="100" />
+                    <div class="param-hint">Количество деревьев в ансамбле.</div>
+                  </div>
+                  <div>
+                    <div class="param-label">max_depth</div>
+                    <input type="number" placeholder="None / 6 / 8" />
+                    <div class="param-hint">Глубина дерева. Больше — риск переобучения.</div>
+                  </div>
+                </div>
+              </div>
 
-<div class="panel-footer">
-<div class="hint-small">
-Pipeline: <span>данные → предобработка → кодирование → масштабирование → модель</span>
-</div>
-<button type="button" class="btn primary" id="runPipelineBtn">
-Запустить обучение
-</button>
-</div>
-</div>
-</div>
+              <div class="params-block" id="params-catboost">
+                <div class="param-label">CatBoost · подсказки</div>
+                <div class="params-grid">
+                  <div>
+                    <div class="param-label">learning_rate</div>
+                    <input type="number" step="0.01" placeholder="0.03" />
+                    <div class="param-hint">Шаг обучения. Чем меньше, тем стабильнее, но дольше обучение.</div>
+                  </div>
+                  <div>
+                    <div class="param-label">depth</div>
+                    <input type="number" placeholder="6" />
+                    <div class="param-hint">Глубина деревьев. Типичные значения: 4–8.</div>
+                  </div>
+                </div>
+              </div>
 
-</section>
-<div class="blank"></div>
-</div>
+              <div class="panel-footer">
+                <div class="hint-small">
+                  Pipeline: <span>данные → предобработка → кодирование → масштабирование → модель</span>
+                </div>
+                <button type="button" class="btn primary" id="runPipelineBtn">
+                  Запустить обучение
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NAV ARROW (ниже контента, как на скрине) -->
+        <div class="manual-nav-row">
+          <button class="manual-nav" id="manualSlideBtn" type="button" aria-label="Перелистнуть шаг">
+            <svg class="manual-nav__icon" width="30" height="22" viewBox="0 0 30 22" aria-hidden="true">
+              <path d="M18 1 L29 11 L18 21" />
+              <path d="M1 11 H28" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </section>
+    <div class="blank"></div>
+  </div>
 </main>
 
 <!-- Лоадер при запуске пайплайна -->
 <div class="loader-overlay hidden" id="loaderOverlay">
-<div class="loader-card">
-<div class="loader-row">
-<div class="spinner"></div>
-<div>
-<div class="loader-title">Запуск пайплайна предобработки и обучения…</div>
-<div class="loader-subtitle">Mock-режим: шаги выполняются только визуально.</div>
-</div>
-</div>
-<div class="loader-meter">
-<div class="loader-meter-fill"></div>
-</div>
-</div>
+  <div class="loader-card">
+    <div class="loader-row">
+      <div class="spinner"></div>
+      <div>
+        <div class="loader-title">Запуск пайплайна предобработки и обучения…</div>
+        <div class="loader-subtitle">Mock-режим: шаги выполняются только визуально.</div>
+      </div>
+    </div>
+    <div class="loader-meter">
+      <div class="loader-meter-fill"></div>
+    </div>
+  </div>
 </div>
 
 <script src="/static/js/manual_learning.js"></script>
-
 </body>
 </html>

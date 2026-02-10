@@ -28,7 +28,7 @@
 <a class="navlink" href="/automatic-learning">Автоматическое обучение</a>
 <a class="navlink" href="/manual-learning">Ручное обучение</a>
 <a class="navlink" href="#">Конструктор</a>
-<a class="navlink active"="/profile">Личный кабинет</a>
+<a class="navlink active" href="/profile">Личный кабинет</a>
 </nav>
 
 <div class="header-actions">
@@ -51,82 +51,17 @@
 <div class="profile-avatar-wrapper">
 <img src="https://i.pravatar.cc/150?img=68" alt="Аватар" class="profile-avatar" id="profileAvatar">
 </div>
-</div>
 
-<h1 class="profile-name">Александр Петров</h1>
-<p class="profile-email">alexander.petrov@example.com</p>
-
-<button type="button" class="btn primary" style="margin-top: 12px;" id="openEditModal">
-  Редактировать профиль
+<button type="button" class="profile-gear-btn" id="openSettings" aria-label="Быстрые настройки">
+  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.2 7.2 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 1h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 7.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.4 1.05.71 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.09.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.56ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z" fill="currentColor"/>
+  </svg>
 </button>
 </div>
 
-<!-- Быстрые настройки -->
-<div class="settings-section">
-<div class="settings-header">
-<h2 class="settings-title">Быстрые настройки</h2>
-<p style="font-size: 13px; color: rgba(11, 18, 32, .55); margin: 4px 0 0;">
-  Управляйте аккаунтом и безопасностью
-</p>
-</div>
-
-<div class="settings-grid">
-<!-- Профиль -->
-<div class="setting-card" data-setting="profile">
-<div class="setting-card-icon">👤</div>
-<div class="setting-card-title">Профиль</div>
-<p class="setting-card-desc">Имя, email, организация, о себе</p>
-</div>
-
-<!-- Безопасность -->
-<div class="setting-card" data-setting="security">
-<div class="setting-card-icon">🔒</div>
-<div class="setting-card-title">Безопасность</div>
-<p class="setting-card-desc">Пароль, 2FA, активные сессии</p>
-</div>
-
-<!-- Уведомления -->
-<div class="setting-card" data-setting="notifications">
-<div class="setting-card-icon">🔔</div>
-<div class="setting-card-title">Уведомления</div>
-<p class="setting-card-desc">Email-уведомления о завершении обучения</p>
-</div>
-
-<!-- Premium -->
-<div class="setting-card" data-setting="premium">
-<div class="setting-card-icon">🚀</div>
-<div class="setting-card-title">Premium</div>
-<p class="setting-card-desc">Расширенные функции и приоритетная поддержка</p>
-</div>
-
-<!-- API Ключи -->
-<div class="setting-card" data-setting="api">
-<div class="setting-card-icon">🔑</div>
-<div class="setting-card-title">API Ключи</div>
-<p class="setting-card-desc">Управление ключами для интеграций</p>
-</div>
-
-<!-- Статистика -->
-<div class="setting-card" data-setting="stats">
-<div class="setting-card-icon">📊</div>
-<div class="setting-card-title">Статистика</div>
-<p class="setting-card-desc">Использование ресурсов и история обучения</p>
-</div>
-
-<!-- Поддержка -->
-<div class="setting-card" data-setting="support">
-<div class="setting-card-icon">💬</div>
-<div class="setting-card-title">Поддержка</div>
-<p class="setting-card-desc">Обратная связь и техническая помощь</p>
-</div>
-
-<!-- Удаление аккаунта -->
-<div class="setting-card" data-setting="delete" style="border-color: rgba(220, 38, 38, .20);">
-<div class="setting-card-icon" style="background: rgba(220, 38, 38, .10); color: #dc2626;">⚠️</div>
-<div class="setting-card-title" style="color: #dc2626;">Удалить аккаунт</div>
-<p class="setting-card-desc" style="color: rgba(220, 38, 38, .70);">⚠️ Необратимое действие</p>
-</div>
-</div>
+<h1 class="profile-name">
+  <span style="margin-left: center">Александр Петров </span>
+</h1>
 </div>
 
 <!-- Сохраненные модели - растянутый на всю ширину -->
@@ -177,7 +112,7 @@ Recall
 <div class="model-stats">
 <div class="model-stat">
 F1-Score
-<span class="-stat-value">0.88</span>
+<span class="model-stat-value">0.88</span>
 </div>
 <div class="model-stat">
 AUC
@@ -305,140 +240,6 @@ Coverage
 </div>
 </main>
 
-<!-- Edit Profile Modal -->
-<div class="edit-modal-overlay" id="editModalOverlay">
-<div class="edit-modal">
-<div class="edit-modal-header">
-<h3 class="edit-modal-title">Редактировать профиль</h3>
-<button type="button" class="edit-modal-close" id="closeEditModal">×</button>
-</div>
-<div class="edit-modal-body">
-<!-- Профиль -->
-<div style="margin-bottom: 28px;">
-<h4 style="font-size: 16px; font-weight: 700; margin: 0 0 16px;">Основная информация</h4 class="form-row">
-<div class="form-group">
-<label class="form-label">Имя и фамилия <span class="req">*</span></label>
-<input type="text" class="form-input" value="Александр Петров">
-</div>
-<div class="form-group">
-<label class="form-label">Email <span class="req">*</span></label>
-<input type="email" class="form-input" value="alexander.petrov@example.com">
-<div class="form-hint">Email используется для входа в систему</div>
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">Телефон</label>
-<input type="tel" class="form-input" value="+7 (999) 123-45-67">
-</div>
-<div class="form-group">
-<label class="form-label">Организация</label>
-<input type="text" class="form-input" value="Data Science Team">
-</div>
-</div>
-
-<div class="form-group">
-<label class="form-label">О себе</label>
-<textarea class="form-textarea" placeholder="Расскажите немного о себе и ваших проектах..."></textarea>
-</div>
-</div>
-
-<!-- Безопасность -->
-<div style="margin-bottom: 28px;">
-<h4 style="font-size: 16px; font-weight: 700; margin: 0 0 16px;">Безопасность</h4>
-<div class="form-group">
-<label class="form-label">Текущий пароль <span class="req">*</span></label>
-<input type="password" class="form-input" placeholder="••••••••">
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">Новый пароль <span class="req">*</span></label>
-<input type="password" class="form-input" placeholder="••••••••">
-</div>
-<div class="form-group">
-<label class="form-label">Подтвердите пароль <span class="req">*</span></label>
-<input type="password" class="form-input" placeholder="••••••••">
-<div class="form-hint warning">Пароль должен содержать минимум 8 символов</div>
-</div>
-</div>
-
-<div style="margin-top: 16px; padding: 12px; background: rgba(30, 111, 184, .05); border-radius: 12px;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-<span>
-<div style="font-size: 13px; font-weight: 600; color: rgba(11, 18, 32, .80);">Двухфакторная аутентификация</div>
-<div style="font-size: 11px; color: rgba(11, 18, 32, .55); margin-top: 4px;">Добавьте дополнительный уровень защиты</div>
-</span>
-<label class="switch">
-<input type="checkbox" />
-<span class="switch-slider"></span>
-</label>
-</div>
-
-<div style="display: flex; align-items: center; justify-content: space-between;">
-<span>
-<div style="font-size: 13px; font-weight: 600 color: rgba(11, 18, 32, .80);">Уведомления по email</div>
-<div style="font-size: 11px; color: rgba(11, 18, 32, .55); margin-top: 4px;">Получайте уведомления о завершении обучения</div>
-</span>
-<label class="switch">
-<input type="checkbox" checked />
-<span class="switch-slider"></span>
-</label>
-</div>
-</div>
-</div>
-
-<!-- Активные сессии -->
-<div style="margin-bottom: 28px;">
-<h4 style="font-size: 16px; font-weight: 700; margin: 0 0 16px;">Активные сессии</h4>
-<p style="font-size: 13px; color: rgba(11, 18, 32, .55); margin-bottom: 16px;">Устройства, на которых выполнен вход в аккаунт.</p>
-
-<div class="security-item">
-<div class="security-item-header">
-<div class="security-item-title">Chrome на Windows</div>
- class="security-item-date">Сегодня, 14:32</div>
-</div>
-<div class="security-item-ip">IP: 192.168.1.100 • Текущая сессия</div>
-</div>
-
-<div class="security-item">
-<div class="security-item-header">
-<div class="security-item-title">Safari на macOS</div>
-<div class="security-item-date">Вчера, 09:15</div>
-</div>
-<div class="security-item-ip">IP: 192.168.1.105</div>
-</div>
-
-<div class="security-item">
-<div class="security-item-header">
-<div class="security-item-title">Firefox на Ubuntu</div>
-<div class="security-item-date">15 янв, 22:47</div>
-</div>
-<div class="security-item-ip">IP: 192.168.2.50</div>
-</div>
-
-<button type="button" class="btn" style="margin-top: 12px; width: 100%;">Завершить все сессии</button>
-</div>
-
-<!-- Удаление аккаунта -->
-<div class="delete-section">
-<h4 style="font-size: 16px; font-weight: 700; margin: 0 0 16px; color: #dc2626;">Удаление аккаунта</h4>
-<p style="font-size: 13px; color: rgba(11, 18, 32, .55); margin-bottom: 12px;">Это действие необратимо. Все ваши данные будут удалены.</p>
-<div class="form-hint warning">
-  ⚠️ Убедитесь, что вы скачали все важные модели и данные перед удалением аккаунта.
-</div>
-<button type="button" class="btn" style="margin-top: 16px; width: 100%;">Удалить аккаунт</button>
-</div>
-</div>
-<div class="edit-modal-footer">
-<button type="button" class="btn" id="cancelEdit">Отмена</button>
-<button type="button" class="btn primary" id="saveProfile">Сохранить изменения</button>
-</div>
-</div>
-</div>
-
-<script src="/static/js/profile.js"></script>
-
-</body>
-</html>
+<!-- Быстрые настройки (открывается по шестерёнке) -->
+<div class="settings-modal-overlay" id="settingsModalOverlay" aria-hidden="true">
+  <div class="settings-modal" role="dialog" aria-modal="true" aria-label="Б
