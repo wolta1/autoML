@@ -680,3 +680,47 @@ main > .stage {
   padding: 6px 12px;
   border-radius: 999px;
 }
+
+/* ===== Dataset Upload ===== */
+
+.ml-dropzone{
+  display:block;
+  border:2px dashed var(--line,#d0d7de);
+  border-radius:12px;
+  padding:26px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.ml-dropzone.drag{
+  border-color:#3b82f6;
+  background:#eff6ff;
+}
+
+.ml-desc{
+  font-size:13px;
+  opacity:.7;
+}
+
+.ml-mini-badge{
+  display:none;
+  margin-top:10px;
+  background:#eaf2fb;
+  padding:6px 10px;
+  border-radius:8px;
+}
+
+.ml-dataset-meta{
+  display:none;
+  margin-top:10px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.ml-chip{
+  background:#f3f4f6;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:13px;
+}

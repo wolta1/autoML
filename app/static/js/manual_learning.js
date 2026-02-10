@@ -161,3 +161,94 @@
     });
   }
 })();
+
+/* ===== ТВОЙ ОРИГИНАЛЬНЫЙ КОД ПОЛНОСТЬЮ СОХРАНЁН ===== */
+/* ... он остаётся без изменений ... */
+
+
+/* ===== ДОБАВЛЕН МОДУЛЬ ЗАГРУЗКИ ДАТАСЕТА ===== */
+
+(function(){
+
+let datasetColumns = []
+
+const dropZone = document.getElementById("mlDropZone")
+const fileInput = document.getElementById("mlFileInput")
+
+if (!dropZone || !fileInput) return
+
+const datasetInfo = document.getElementById("mlDatasetInfo")
+const schemaBadge = document.getElementById("mlSchemaBadge")
+const datasetMeta = document.getElementById("mlDatasetMeta")
+
+const metaFile = document.getElementById("mlMetaFile")
+const metaShape = document.getElementById("mlMetaShape")
+
+dropZone.addEventListener("click", () => fileInput.click())
+
+dropZone.addEventListener("dragover", e=>{
+  e.preventDefault()
+  dropZone.classList.add("drag")
+})
+
+dropZone.addEventListener("dragleave", ()=>{
+  dropZone.classList.remove("drag")
+})
+
+dropZone.addEventListener("drop", e=>{
+  e.preventDefault()
+  dropZone.classList.remove("drag")
+  handleFile(e.dataTransfer.files[0])
+})
+
+fileInput.addEventListener("change", e=>{
+  handleFile(e.target.files[0])
+})
+
+function handleFile(file){
+
+  if(!file) return
+
+  const ext = file.name.split(".").pop().toLowerCase()
+
+  if(ext === "csv" || ext === "txt"){
+    Papa.parse(file,{
+      header:true,
+      preview:20,
+      complete:res=>{
+        datasetColumns = res.meta.fields || []
+        updateUI(file,res.data.length)
+      }
+    })
+  }
+
+  if(ext === "xlsx" || ext === "xls"){
+    const reader = new FileReader()
+
+    reader.onload = e=>{
+      const wb = XLSX.read(e.target.result,{type:"binary"})
+      const sheet = wb.Sheets[wb.SheetNames[0]]
+      const data = XLSX.utils.sheet_to_json(sheet,{header:1})
+
+      datasetColumns = data[0] || []
+      updateUI(file,data.length-1)
+    }
+
+    reader.readAsBinaryString(file)
+  }
+}
+
+function updateUI(file,rows){
+
+  datasetInfo.innerHTML =
+    `Файл: ${file.name}<br>
+     Строк: ${rows} · Колонок: ${datasetColumns.length}`
+
+  schemaBadge.style.display = "inline-flex"
+  datasetMeta.style.display = "flex"
+
+  metaFile.innerHTML = `<strong>Файл:</strong> ${file.name}`
+  metaShape.innerHTML = `<strong>Shape:</strong> (${rows}, ${datasetColumns.length})`
+}
+
+})();
