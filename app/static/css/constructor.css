@@ -149,3 +149,56 @@ width:100%;
 height:100%;
 pointer-events:none;
 }
+
+/* ===== MODAL ===== */
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:1000;
+}
+
+.modal.hidden{
+display:none;
+}
+
+.modal-card{
+width:420px;
+background:#fff;
+border-radius:16px;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.modal-body{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.modal-body select,
+.modal-body input{
+padding:10px;
+border-radius:10px;
+border:1px solid var(--line);
+}
+
+.dataset-drop{
+border:2px dashed var(--line);
+padding:24px;
+text-align:center;
+border-radius:12px;
+cursor:pointer;
+}
