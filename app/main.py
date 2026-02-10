@@ -23,6 +23,10 @@ async def automl(request: Request):
 async def manual_learning(request: Request):
     return templates.TemplateResponse("manual_learning.html", {"request": request})
 
+@app.get("/constructor", response_class=HTMLResponse)
+async def profile(request: Request):
+    return templates.TemplateResponse("constructor.html", {"request": request})
+
 @app.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request):
     return templates.TemplateResponse("profile.html", {"request": request})

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Конструктор пайплайна</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/constructor.css">
+</head>
+
+<body>
+
+<header>
+<div class="header-inner">
+
+<div class="brand">
+<div class="logo">ML</div>
+<div class="brand-text">
+<strong>Платформа анализа данных</strong>
+<span>Конструктор ML пайплайнов</span>
+</div>
+</div>
+
+<nav>
+<a class="navlink" href="/">Главная</a>
+<a class="navlink" href="/automatic-learning">Авто обучение</a>
+<a class="navlink" href="/manual-learning">Ручное обучение</a>
+<a class="navlink active" href="/constructor">Конструктор</a>
+</nav>
+
+<div class="header-actions">
+<a class="btn primary">Сохранить</a>
+</div>
+
+</div>
+</header>
+
+<main class="constructor-layout">
+
+<!-- CANVAS -->
+<div class="canvas-wrapper">
+
+<div id="pipelineCanvas" class="pipeline-canvas">
+
+<div class="canvas-empty" id="emptyCanvas">
+
+<div class="empty-box" id="addStepBtn">
+<div class="plus">+</div>
+<span>Add first step</span>
+</div>
+
+<div class="or">or</div>
+
+<div class="empty-box ai">
+✨
+<span>Build with AI</span>
+</div>
+
+</div>
+
+<svg id="connections"></svg>
+
+</div>
+
+</div>
+
+<!-- SIDEBAR -->
+<aside class="node-sidebar">
+
+<h3>Добавить шаг</h3>
+
+<input class="node-search" placeholder="Search nodes..."/>
+
+<div class="node-group">
+
+<div class="node-item" draggable="true" data-type="dataset">
+📊 Dataset
+</div>
+
+<div class="node-item" draggable="true" data-type="preprocess">
+🧹 Preprocess
+</div>
+
+<div class="node-item" draggable="true" data-type="model">
+🤖 Model
+</div>
+
+<div class="node-item" draggable="true" data-type="evaluation">
+📈 Evaluation
+</div>
+
+</div>
+
+</aside>
+
+</main>
+
+<script src="/static/js/constructor.js"></script>
+</body>
+</html>
