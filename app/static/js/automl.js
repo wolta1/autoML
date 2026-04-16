@@ -1,4 +1,6 @@
 let columns = []
+let currentFile = null
+let lastTrainResult = null
 
 const dropZone = document.getElementById("dropZone")
 const fileInput = document.getElementById("fileInput")
@@ -25,6 +27,7 @@ fileInput.addEventListener("change", e => {
 })
 
 function handleFile(file) {
+  currentFile = file
   let ext = file.name.split(".").pop().toLowerCase()
 
   if (ext === "csv" || ext === "txt") {
@@ -80,55 +83,136 @@ document.getElementById("trainBtn").onclick = async () => {
   let target = targetSelect.value
   let model = document.getElementById("modelSelect").value
 
+  if (!currentFile) {
+    alert("Сначала загрузите файл с данными")
+    return
+  }
   if (!target) {
-    alert("Выберите target")
+    alert("Выберите целевую переменную")
     return
   }
 
-  // Показываем прогресс-бар
+  notification.style.display = "none"
+  document.getElementById("favoriteBtn").style.display = "none"
+
   progressContainer.style.display = "block"
   progressText.style.display = "block"
-  progress.style.width = "0%"
+  progress.style.width = "10%"
+  progressText.textContent = "Загрузка данных и обучение модели..."
 
-  // Симулируем прогресс обучения
-  let progressValue = 0
-  const progressInterval = setInterval(() => {
-    progressValue += 5
-    progress.style.width = `${progressValue}%`
-    
-    if (progressValue >= 100) {
-      clearInterval(progressInterval)
-      
-      // Скрываем прогресс-бар
-      progressContainer.style.display = "none"
-      progressText.style.display = "none"
-      
-      // Показываем уведомление
-      notification.style.display = "block"
-      downloadLink.href = "/models/model.cpkl"
-      
-      // Показываем кнопку "Добавить в избранное"
-      document.getElementById("favoriteBtn").style.display = "inline-block"
-    }
-  }, 200)
+  let fd = new FormData()
+  fd.append("file", currentFile)
+  fd.append("target", target)
+  fd.append("model", model)
 
   try {
-    // Отправка запроса на обучение
+    progress.style.width = "30%"
+
     const response = await fetch("/train", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ target, model })
+      body: fd
     })
 
-    if (!response.ok) throw new Error("Ошибка обучения")
+    progress.style.width = "90%"
+
+    if (!response.ok) {
+      let err = await response.json().catch(() => ({}))
+      throw new Error(err.detail || "Ошибка обучения")
+    }
+
+    const result = await response.json()
+    lastTrainResult = result
+
+    progress.style.width = "100%"
+    progressText.textContent = "Готово!"
+
+    setTimeout(() => {
+      progressContainer.style.display = "none"
+      progressText.style.display = "none"
+
+      let taskLabel = result.task === "classification" ? "Классификация" : "Регрессия"
+      let metricsHtml = Object.entries(result.metrics)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(" · ")
+
+      let notifBody = document.querySelector("#notification p")
+      if (notifBody) {
+        notifBody.innerHTML =
+          `Задача: <b>${taskLabel}</b><br>` +
+          `Метрики: ${metricsHtml}<br>` +
+          `Использовано признаков: ${result.features_used.length}`
+      }
+
+      if (result.dropped_columns && result.dropped_columns.length) {
+        let droppedInfo = document.querySelector("#notification .dropped-info")
+        if (!droppedInfo) {
+          droppedInfo = document.createElement("p")
+          droppedInfo.className = "dropped-info"
+          droppedInfo.style.cssText = "margin-top:6px; font-size:13px; opacity:0.8;"
+          notification.appendChild(droppedInfo)
+        }
+        droppedInfo.textContent = "Удалены столбцы: " + result.dropped_columns.join(", ")
+      }
+
+      downloadLink.href = `/download-model/${result.model_id}`
+      downloadLink.download = `model_${result.model_id}.pkl`
+
+      let stepsLink = document.getElementById("stepsLink")
+      if (!stepsLink) {
+        stepsLink = document.createElement("a")
+        stepsLink.id = "stepsLink"
+        stepsLink.className = downloadLink.className
+        stepsLink.style.cssText = "margin-left:8px;"
+        stepsLink.textContent = "Скачать отчёт пайплайна"
+        downloadLink.parentNode.insertBefore(stepsLink, downloadLink.nextSibling)
+      }
+      stepsLink.href = `/download-steps/${result.model_id}`
+      stepsLink.download = `pipeline_steps_${result.model_id}.json`
+
+      notification.style.display = "block"
+      document.getElementById("favoriteBtn").style.display = "inline-block"
+    }, 500)
+
   } catch (error) {
-    console.error("Training error:", error)
-    alert("Ошибка при обучении модели")
     progressContainer.style.display = "none"
     progressText.style.display = "none"
+    alert(error.message || "Ошибка при обучении модели")
   }
 }
 
-document.getElementById("favoriteBtn").onclick = () => {
-  alert("Модель добавлена в избранное")
+document.getElementById("favoriteBtn").onclick = async () => {
+  if (!lastTrainResult) return
+
+  try {
+    const resp = await fetch("/favorite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        model_id: lastTrainResult.model_id,
+        task: lastTrainResult.task,
+        model_key: document.getElementById("modelSelect").value,
+        model_label: lastTrainResult.model_label,
+        target: targetSelect.value,
+        metrics: lastTrainResult.metrics,
+        features_used: lastTrainResult.features_used,
+        filename: currentFile.name,
+      })
+    })
+
+    if (resp.status === 401) {
+      alert("Войдите в личный кабинет, чтобы сохранять модели в избранное.")
+      window.location.href = "/login?next=/automatic-learning"
+      return
+    }
+    const favData = await resp.json().catch(() => ({}))
+    if (!resp.ok) {
+      const msg = typeof favData.detail === "string" ? favData.detail : "Не удалось сохранить"
+      throw new Error(msg)
+    }
+    const fav = favData
+    alert(`Модель добавлена в избранное (ID: ${fav.fav_id})`)
+  } catch (e) {
+    alert(e.message || "Ошибка сохранения в избранное")
+  }
 }

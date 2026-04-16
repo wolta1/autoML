@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Вход — AutoML</title>
+<link rel="stylesheet" href="/static/css/manual_learning.css" />
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; background:#f6f7fb; }
+  .auth-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:32px 16px; }
+  .auth-card {
+    width:100%; max-width:420px; background:#fff; border:1px solid var(--line); border-radius:20px;
+    padding:28px 26px 24px; box-shadow:0 12px 40px rgba(10,25,46,.06);
+  }
+  .auth-title { font-size:22px; font-weight:800; margin:0 0 6px; color:var(--ink); }
+  .auth-sub { font-size:13px; color:rgba(11,18,32,.55); margin-bottom:20px; }
+  .auth-tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .auth-tab {
+    flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:#fff;
+    font-weight:650; font-size:13px; cursor:pointer; color:rgba(11,18,32,.65);
+  }
+  .auth-tab.active { border-color:rgba(30,111,184,.35); background:rgba(30,111,184,.08); color:var(--blue); }
+  .auth-panel { display:none; }
+  .auth-panel.active { display:block; }
+  .auth-field { margin-bottom:14px; }
+  .auth-field label { display:block; font-size:12px; font-weight:650; margin-bottom:6px; color:rgba(11,18,32,.7); }
+  .auth-field input {
+    width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line);
+    font-size:14px; box-sizing:border-box;
+  }
+  .auth-field input:focus { outline:2px solid rgba(30,111,184,.25); border-color:rgba(30,111,184,.35); }
+  .auth-error { display:none; margin-bottom:12px; padding:10px 12px; border-radius:10px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; font-size:13px; }
+  .auth-error.visible { display:block; }
+  .auth-submit { width:100%; margin-top:6px; padding:12px; border-radius:12px; border:none; cursor:pointer;
+    font-weight:700; font-size:14px; background:linear-gradient(180deg, var(--blue), var(--blue2)); color:#fff; }
+  .auth-submit:disabled { opacity:.55; cursor:not-allowed; }
+  .auth-back { display:block; text-align:center; margin-top:18px; font-size:13px; color:var(--blue); }
+</style>
+</head>
+<body>
+
+<header style="position:relative;">
+  <div class="header-inner" style="max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:20px;">
+    <a href="/" class="brand" style="text-decoration:none;color:inherit;">
+      <div class="logo">ML</div>
+      <div class="brand-text">
+        <strong>Платформа анализа данных</strong>
+        <span>Визуальный конструктор ML-пайплайнов</span>
+      </div>
+    </a>
+    <nav style="margin-left:auto;display:flex;gap:16px;">
+      <a class="navlink" href="/">Главная</a>
+      <a class="navlink" href="/automatic-learning">Автообучение</a>
+      <a class="navlink" href="/manual-learning">Ручное обучение</a>
+    </nav>
+  </div>
+</header>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-title">Личный кабинет</h1>
+    <p class="auth-sub">Войдите или зарегистрируйтесь (логин и пароль).</p>
+
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" id="tabLogin">Вход</button>
+      <button type="button" class="auth-tab" id="tabReg">Регистрация</button>
+    </div>
+
+    <div id="authError" class="auth-error"></div>
+
+    <div class="auth-panel active" id="panelLogin">
+      <form id="formLogin">
+        <div class="auth-field">
+          <label for="loginUser">Логин</label>
+          <input id="loginUser" name="username" autocomplete="username" required />
+        </div>
+        <div class="auth-field">
+          <label for="loginPass">Пароль</label>
+          <input id="loginPass" type="password" name="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="auth-submit" id="btnLogin">Войти</button>
+      </form>
+    </div>
+
+    <div class="auth-panel" id="panelReg">
+      <form id="formReg">
+        <div class="auth-field">
+          <label for="regUser">Логин</label>
+          <input id="regUser" name="username" autocomplete="username" required placeholder="латиница, цифры, _" />
+        </div>
+        <div class="auth-field">
+          <label for="regPass">Пароль</label>
+          <input id="regPass" type="password" name="password" autocomplete="new-password" required minlength="6" />
+        </div>
+        <button type="submit" class="auth-submit" id="btnReg">Зарегистрироваться</button>
+      </form>
+    </div>
+
+    <a class="auth-back" href="/">← На главную</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  function safeNext(raw) {
+    if (!raw || typeof raw !== "string") return "/profile"
+    const t = raw.trim()
+    if (!t.startsWith("/") || t.startsWith("//")) return "/profile"
+    if (t.length > 256) return "/profile"
+    if (/[\s{}]/.test(t)) return "/profile"
+    return t
+  }
+
+  function formatApiError(data) {
+    const d = data && data.detail
+    if (typeof d === "string") return d
+    if (Array.isArray(d)) {
+      return d.map(function (e) { return (e && (e.msg || e.message)) || JSON.stringify(e) }).join("; ")
+    }
+    if (d && typeof d === "object") return JSON.stringify(d)
+    return "Ошибка запроса"
+  }
+
+  const params = new URLSearchParams(window.location.search)
+  const nextUrl = safeNext(params.get("next"))
+
+  const errEl = document.getElementById("authError")
+  function showErr(msg) {
+    errEl.textContent = msg
+    errEl.classList.add("visible")
+  }
+  function clearErr() {
+    errEl.classList.remove("visible")
+    errEl.textContent = ""
+  }
+
+  document.getElementById("tabLogin").onclick = () => {
+    document.getElementById("tabLogin").classList.add("active")
+    document.getElementById("tabReg").classList.remove("active")
+    document.getElementById("panelLogin").classList.add("active")
+    document.getElementById("panelReg").classList.remove("active")
+    clearErr()
+  }
+  document.getElementById("tabReg").onclick = () => {
+    document.getElementById("tabReg").classList.add("active")
+    document.getElementById("tabLogin").classList.remove("active")
+    document.getElementById("panelReg").classList.add("active")
+    document.getElementById("panelLogin").classList.remove("active")
+    clearErr()
+  }
+
+  document.getElementById("formLogin").onsubmit = async (e) => {
+    e.preventDefault()
+    clearErr()
+    const btn = document.getElementById("btnLogin")
+    btn.disabled = true
+    try {
+      const r = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          username: document.getElementById("loginUser").value.trim(),
+          password: document.getElementById("loginPass").value,
+        }),
+      })
+      const data = await r.json().catch(() => ({}))
+      if (!r.ok) throw new Error(formatApiError(data))
+      window.location.href = nextUrl
+    } catch (x) {
+      showErr(x.message || "Ошибка")
+    } finally {
+      btn.disabled = false
+    }
+  }
+
+  document.getElementById("formReg").onsubmit = async (e) => {
+    e.preventDefault()
+    clearErr()
+    const btn = document.getElementById("btnReg")
+    btn.disabled = true
+    try {
+      const r = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          username: document.getElementById("regUser").value.trim(),
+          password: document.getElementById("regPass").value,
+        }),
+      })
+      const data = await r.json().catch(() => ({}))
+      if (!r.ok) throw new Error(formatApiError(data))
+      window.location.href = nextUrl
+    } catch (x) {
+      showErr(x.message || "Ошибка")
+    } finally {
+      btn.disabled = false
+    }
+  }
+})()
+</script>
+</body>
+</html>

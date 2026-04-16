@@ -6,7 +6,6 @@
 <title>Личный кабинет — AutoML Pipeline</title>
 
 <style>
-/* ===== NEW GLOBAL & HEADER STYLES ===== */
 :root{
   --ink:#0b1220;
   --line:rgba(11,18,32,.10);
@@ -22,13 +21,12 @@ body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
   color:var(--ink);
-  background:#f6f7fb; /* Вернул фон из профиля для контраста */
+  background:#f6f7fb;
 }
 
 a{ color:inherit; text-decoration:none; }
 a:focus{ outline:3px solid rgba(30,111,184,.25); outline-offset:3px; border-radius:10px; }
 
-/* HEADER */
 header{
   position: sticky;
   top: 0;
@@ -89,7 +87,6 @@ header{
   text-overflow: ellipsis;
 }
 
-/* Nav */
 .menu-toggle{ display:none; }
 nav{
   display:flex;
@@ -157,7 +154,6 @@ nav{
   box-shadow: 0 14px 28px rgba(30,111,184,.20);
 }
 
-/* Burger */
 .menu-btn{
   display:none;
   width: 42px;
@@ -190,8 +186,6 @@ nav{
 }
 .menu-btn i::before{ top: -6px; }
 .menu-btn i::after{ top: 6px; }
-
-/* ===== OLD PROFILE STYLES (PRESERVED) ===== */
 
 main{
   padding:32px 20px 60px;
@@ -251,8 +245,22 @@ main{
   margin:0;
   text-align:center;
 }
-
-/* ===== MODELS ===== */
+.profile-login-hint{
+  margin:8px 0 0;
+  text-align:center;
+  font-size:13px;
+  color:rgba(11,18,32,.45);
+}
+.profile-avatar-letter{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  font-weight:800;
+  color:var(--blue);
+  background:#fff;
+  text-transform:uppercase;
+}
 
 .models-section{
   margin-top:32px;
@@ -294,19 +302,25 @@ main{
   border:1px solid var(--line);
   border-radius:16px;
   padding:16px;
+  transition: box-shadow .15s ease;
+}
+.model-card:hover{
+  box-shadow: 0 6px 20px rgba(10,25,46,.06);
 }
 
 .model-card-header{
   display:flex;
   justify-content:space-between;
+  align-items:flex-start;
   margin-bottom:10px;
 }
 
-.model-title{ font-weight:700; }
+.model-title{ font-weight:700; font-size:14px; }
 
 .model-meta{
   font-size:12px;
   color:rgba(11,18,32,.55);
+  margin-top:2px;
 }
 
 .model-tag{
@@ -314,11 +328,50 @@ main{
   font-weight:700;
   padding:4px 8px;
   border-radius:999px;
+  white-space:nowrap;
 }
 
-.model-tag.success{
-  background:rgba(74,222,128,.1);
+.model-tag.cls{
+  background:rgba(30,111,184,.08);
+  color:var(--blue);
+}
+
+.model-tag.reg{
+  background:rgba(249,115,22,.08);
+  color:#c2410c;
+}
+
+.model-tag.source-auto{
+  background:rgba(74,222,128,.08);
   color:#16a34a;
+}
+
+.model-tag.source-manual{
+  background:rgba(168,85,247,.08);
+  color:#7c3aed;
+}
+
+.model-metrics{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+
+.metric-chip{
+  font-size:11px;
+  font-weight:600;
+  padding:3px 8px;
+  border-radius:6px;
+  background:rgba(30,111,184,.05);
+  color:rgba(11,18,32,.7);
+}
+
+.model-details{
+  font-size:12px;
+  color:rgba(11,18,32,.55);
+  margin-top:8px;
+  line-height:1.5;
 }
 
 .model-actions{
@@ -329,16 +382,46 @@ main{
 
 .model-action-btn{
   flex:1;
-  padding:6px;
-  border-radius:8px;
+  padding:8px 6px;
+  border-radius:10px;
   border:1px solid var(--line);
   background:#fff;
   cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+  color:rgba(11,18,32,.7);
+  transition: background .1s, border-color .1s;
+}
+.model-action-btn:hover{
+  background:rgba(30,111,184,.04);
+  border-color:rgba(30,111,184,.15);
+}
+.model-action-btn.delete{
+  color:#dc2626;
+}
+.model-action-btn.delete:hover{
+  background:rgba(220,38,38,.04);
+  border-color:rgba(220,38,38,.15);
 }
 
-.model-action-btn.delete{ color:#dc2626; }
-
-/* ===== SETTINGS ===== */
+.empty-state{
+  text-align:center;
+  padding:48px 20px;
+  color:rgba(11,18,32,.45);
+}
+.empty-state-icon{
+  font-size:48px;
+  margin-bottom:12px;
+}
+.empty-state-title{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:4px;
+  color:rgba(11,18,32,.65);
+}
+.empty-state-desc{
+  font-size:13px;
+}
 
 .settings-modal-overlay{
   position:fixed;
@@ -359,7 +442,7 @@ main{
 
 .settings-modal{
   background:#fff;
-  width:520px;
+  width:min(560px, 96vw);
   border-radius:24px;
   overflow:hidden;
 }
@@ -378,26 +461,58 @@ main{
   cursor:pointer;
 }
 
-.settings-grid{
-  padding:24px;
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
+.settings-body{
+  padding:20px 24px 24px;
+  max-height:70vh;
+  overflow-y:auto;
 }
-
-.setting-card{
+.account-section{
   border:1px solid var(--line);
-  border-radius:16px;
-  padding:16px;
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.account-section h3{
+  margin:0 0 10px;
+  font-size:14px;
+  font-weight:700;
+}
+.account-field{ margin-bottom:10px; }
+.account-field label{
+  display:block;
+  font-size:11px;
+  font-weight:650;
+  margin-bottom:4px;
+  color:rgba(11,18,32,.55);
+}
+.account-field input{
+  width:100%;
+  box-sizing:border-box;
+  padding:9px 10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  font-size:13px;
+}
+.account-btn{
+  margin-top:4px;
+  padding:9px 14px;
+  border-radius:10px;
+  border:1px solid rgba(30,111,184,.25);
+  background:linear-gradient(180deg,var(--blue),var(--blue2));
+  color:#fff;
+  font-weight:700;
+  font-size:13px;
   cursor:pointer;
 }
-
-.setting-card-icon{
-  font-size:22px;
-  margin-bottom:8px;
+.account-btn.danger{
+  background:#fff;
+  color:#b91c1c;
+  border-color:#fecaca;
 }
+.account-msg{ font-size:12px; margin-top:8px; min-height:16px; }
+.account-msg.ok{ color:#166534; }
+.account-msg.err{ color:#b91c1c; }
 
-/* Responsive */
 @media (max-width: 1120px){
   nav{ gap: 16px; justify-content: flex-start; }
   .header-actions{ min-width: auto; }
@@ -434,7 +549,6 @@ main{
 
 <body>
 
-<!-- ===== HEADER ===== -->
 <header>
 <div class="header-inner">
 
@@ -458,7 +572,7 @@ main{
 
 <div class="header-actions">
 <a class="btn" href="/constructor">Конструктор</a>
-<a class="btn primary" href="/profile">Войти</a>
+<button type="button" class="btn primary" id="headerLogout">Выйти</button>
 </div>
 
 <label class="menu-btn" for="menu"><i></i></label>
@@ -470,44 +584,24 @@ main{
 
 <div class="profile-hero">
 <div class="profile-avatar-container">
-
-<div class="profile-avatar-wrapper">
-<img src="https://i.pravatar.cc/150?img=68  " class="profile-avatar">
+<div class="profile-avatar-wrapper profile-avatar-letter" id="profileAvatar">{{ (username or "?")[0] }}</div>
+<button class="profile-gear-btn" id="openSettings" type="button" title="Настройки аккаунта">⚙</button>
 </div>
-
-<button class="profile-gear-btn" id="openSettings">⚙</button>
-
-</div>
-
-<h1 class="profile-name">Александр Петров</h1>
+<h1 class="profile-name" id="profileName">{{ username|e }}</h1>
+<p class="profile-login-hint">Логин в системе</p>
 </div>
 
 <div class="models-section">
-
 <div class="models-header">
 <div class="models-title">Сохранённые модели</div>
-<div class="models-count">12 моделей</div>
+<div class="models-count" id="modelsCount">0 моделей</div>
 </div>
-
-<div class="models-grid">
-
-<div class="model-card">
-<div class="model-card-header">
-<div>
-<div class="model-title">Customer Scoring v2.1</div>
-<div class="model-meta">15 янв 2026</div>
-</div>
-<span class="model-tag success">Готова</span>
-</div>
-
-<div class="model-actions">
-<button class="model-action-btn">📈</button>
-<button class="model-action-btn">💾</button>
-<button class="model-action-btn delete">🗑</button>
-</div>
-
-</div>
-
+<div class="models-grid" id="modelsGrid">
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon">📦</div>
+    <div class="empty-state-title">Пока нет сохранённых моделей</div>
+    <div class="empty-state-desc">Обучите модель и нажмите «Добавить в избранное»</div>
+  </div>
 </div>
 </div>
 
@@ -518,18 +612,44 @@ main{
 <div class="settings-modal">
 
 <div class="edit-modal-header">
-<strong>Настройки профиля</strong>
-<button class="edit-modal-close" id="closeSettings">✕</button>
+<strong>Аккаунт</strong>
+<button type="button" class="edit-modal-close" id="closeSettings">✕</button>
 </div>
 
-<div class="settings-grid">
-<div class="setting-card"><div class="setting-card-icon">👤</div>Профиль</div>
-<div class="setting-card"><div class="setting-card-icon">🔐</div>Безопасность</div>
-<div class="setting-card"><div class="setting-card-icon">🗑</div>Удалить</div>
+<div class="settings-body">
+  <div class="account-section">
+    <h3>Сменить логин</h3>
+    <form id="formChangeUsername">
+      <div class="account-field"><label>Новый логин</label><input id="accNewUsername" autocomplete="username" required /></div>
+      <div class="account-field"><label>Текущий пароль</label><input id="accUserPass" type="password" autocomplete="current-password" required /></div>
+      <button type="submit" class="account-btn">Сохранить логин</button>
+      <div class="account-msg" id="msgUsername"></div>
+    </form>
+  </div>
+  <div class="account-section">
+    <h3>Сменить пароль</h3>
+    <form id="formChangePassword">
+      <div class="account-field"><label>Текущий пароль</label><input id="accOldPass" type="password" autocomplete="current-password" required /></div>
+      <div class="account-field"><label>Новый пароль</label><input id="accNewPass" type="password" autocomplete="new-password" required minlength="6" /></div>
+      <button type="submit" class="account-btn">Сохранить пароль</button>
+      <div class="account-msg" id="msgPassword"></div>
+    </form>
+  </div>
+  <div class="account-section" style="border-color:#fecaca;background:#fffafa;">
+    <h3>Удалить аккаунт</h3>
+    <p style="margin:0 0 10px;font-size:12px;color:#991b1b;line-height:1.45;">Безвозвратно: профиль и избранные модели из списка будут удалены.</p>
+    <form id="formDeleteAccount">
+      <div class="account-field"><label>Пароль для подтверждения</label><input id="accDelPass" type="password" autocomplete="current-password" required /></div>
+      <button type="submit" class="account-btn danger">Удалить аккаунт</button>
+      <div class="account-msg" id="msgDelete"></div>
+    </form>
+  </div>
 </div>
 
 </div>
 </div>
+
+<script src="/static/js/profile.js"></script>
 
 <script>
 const openBtn = document.getElementById("openSettings");
@@ -548,6 +668,11 @@ closeBtn.onclick = () => {
 
 modal.onclick = e => {
   if(e.target === modal) closeBtn.onclick();
+};
+
+document.getElementById("headerLogout").onclick = async () => {
+  await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
+  window.location.href = "/login?next=/profile";
 };
 </script>
 

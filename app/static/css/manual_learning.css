@@ -1,9 +1,3 @@
-/* ========================================
-   СТИЛИ ДЛЯ СТРАНИЦЫ РУЧНОГО ОБУЧЕНИЯ
-   (вернул прежнее оформление: шрифты/размеры/компоненты)
-   + добавил только слайдер/стрелку/голубой блок, не ломая старое
-   ======================================== */
-
 .layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -62,8 +56,8 @@
 .dataset-chip {
   padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(30, 111, 184, .08);
-  border: 1px solid rgba(30, 111, 184, .15);
+  background: #fff;
+  border: 1px solid var(--line);
   font-size: 13px;
   color: var(--blue);
 }
@@ -106,7 +100,7 @@
   margin-top: 8px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background-color: #f9fafb;
+  background-color: #fff;
   padding: 16px;
   max-height: 280px;
   overflow: auto;
@@ -315,9 +309,9 @@ input[type="text"]:focus {
 .boxplot-preview {
   margin-top: 16px;
   padding: 16px;
-  border: 1px dashed rgba(30, 111, 184, .25);
+  border: 1px dashed var(--line);
   border-radius: 12px;
-  background: rgba(30, 111, 184, .05);
+  background: #fff;
   font-size: 13px;
   color: var(--blue);
   line-height: 1.5;
@@ -553,12 +547,9 @@ input[type="text"]:focus {
   to { width: 84%; }
 }
 
-/* ===========================
-   ДОБАВЛЕНО: СЛАЙДЫ + ГОЛУБОЙ БЛОК + СТРЕЛКА
-   =========================== */
 
 .manual-slides {
-  margin-top: 0; /* layout уже имеет margin-top */
+  margin-top: 0; 
 }
 
 .manual-slide {
@@ -569,11 +560,10 @@ input[type="text"]:focus {
   display: block;
 }
 
-/* голубой моковый блок справа (как на скрине 1) */
 .mock-dashboard {
   border-radius: 24px;
-  background: rgba(30, 111, 184, .06);
-  border: 2px dashed rgba(30, 111, 184, .25);
+  background: #fff;
+  border: 1px solid var(--line);
   min-height: 620px;
   overflow: hidden;
   min-width: 0;
@@ -587,8 +577,8 @@ input[type="text"]:focus {
 
 .mock-chart {
   border-radius: 16px;
-  background: rgba(255,255,255,.65);
-  border: 1px solid rgba(30, 111, 184, .20);
+  background: #fff;
+  border: 1px solid var(--line);
   height: 160px;
   overflow: hidden;
 }
@@ -605,7 +595,6 @@ input[type="text"]:focus {
   stroke-width: 2;
 }
 
-/* стрелка перелистывания (снизу) */
 .manual-nav-row {
   display: flex;
   justify-content: center;
@@ -631,12 +620,10 @@ input[type="text"]:focus {
   stroke-linejoin: round;
 }
 
-/* на шаге 2 стрелка смотрит влево */
 .manual-slides[data-step="2"] .manual-nav__icon {
   transform: rotate(180deg);
 }
 
-/* чтобы блоки не вылезали за пределы страницы */
 @media (max-width: 1120px) {
   .layout {
     grid-template-columns: 1fr;
@@ -646,7 +633,6 @@ input[type="text"]:focus {
   }
 }
 
-/* Центрирование всего содержимого страницы (без правок style.css) */
 main > .stage {
   max-width: 1180px;
   width: 100%;
@@ -655,7 +641,6 @@ main > .stage {
   padding-right: 16px;
 }
 
-/* чтобы хиро/слайды не растягивались странно внутри stage */
 .hero {
   width: 100%;
 }
@@ -664,7 +649,6 @@ main > .stage {
   font-size: 48px;
 }
 
-/* Унификация бейджей: STEP / Dataset preview / Outliers -> как Manual Learning */
 .panel-badge,
 .hero .badge[style] {
   background: #eaf2fb !important;
@@ -673,15 +657,12 @@ main > .stage {
   font-weight: 700 !important;
 }
 
-/* если нужно, чтобы размер был как у Manual Learning */
 .panel-badge,
 .hero .badge[style] {
   font-size: 12px;
   padding: 6px 12px;
   border-radius: 999px;
 }
-
-/* ===== Dataset Upload ===== */
 
 .ml-dropzone{
   display:block;

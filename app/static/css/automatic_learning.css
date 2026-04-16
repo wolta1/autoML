@@ -1,9 +1,3 @@
-/* ========================================
-   СТИЛИ ДЛЯ СТРАНИЦЫ АВТОМАТИЧЕСКОГО ОБУЧЕНИЯ
-   (локальные оверрайды; общий style.css и index.html не меняем)
-   ======================================== */
-
-/* Work page: full width without the right blank column */
 .stage {
   grid-template-columns: 1fr;
 }
@@ -12,14 +6,12 @@
   display: none;
 }
 
-/* Center the main content block */
 .hero {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Responsive grid for Step 1/2 blocks */
 .automl-grid {
   grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)) !important;
   gap: 32px !important;
@@ -30,12 +22,10 @@
   max-width: 100%;
 }
 
-/* Dropzone: let height grow with content */
 .automl-dropzone.jump {
   height: auto !important;
 }
 
-/* Select-like blocks (target/model): override the small 76x76 "jump" box */
 .automl-select.jump {
   width: 100% !important;
   height: auto !important;
@@ -51,7 +41,6 @@
   width: 100%;
 }
 
-/* Long file names should not break layout */
 #datasetInfo {
   overflow-wrap: anywhere;
   word-break: break-word;

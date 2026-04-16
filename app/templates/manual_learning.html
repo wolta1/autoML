@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-/* ===== ЗАДАЧА 2: Кнопки не выходят за границы ===== */
+
 .btn, .panel-footer .btn {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -18,7 +18,6 @@
   box-sizing: border-box;
 }
 
-/* ===== ЗАДАЧА 4: Фиксация хедера при навигации ===== */
 header {
   position: sticky;
   top: 0;
@@ -27,7 +26,6 @@ header {
   border-bottom: 1px solid var(--line, #d0d7de);
 }
 
-/* ===== ЗАДАЧА 1: Стили для прогресса и результата ===== */
 .training-result {
   display: none;
   margin-top: 20px;
@@ -141,7 +139,6 @@ header {
   background: rgba(30, 111, 184, .08);
 }
 
-/* ===== ЗАДАЧА 3: Стили для dropzone ===== */
 .ml-dropzone {
   display: block;
   border: 2px dashed var(--line, #d0d7de);
@@ -151,7 +148,7 @@ header {
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 20px;
-  background: rgba(30, 111, 184, .03);
+  background: #fff;
 }
 
 .ml-dropzone:hover,
@@ -189,7 +186,8 @@ header {
   display: none;
   margin: 16px 0;
   padding: 14px 18px;
-  background: rgba(30, 111, 184, .06);
+  background: #fff;
+  border: 1px solid var(--line, #d0d7de);
   border-radius: 12px;
   font-size: 13px;
   color: rgba(11, 18, 32, .75);
@@ -242,7 +240,6 @@ header {
   margin-right: 4px;
 }
 
-/* ===== АНАЛИТИКА: Правая панель с графиками ===== */
 .analytics-header {
   margin-bottom: 16px;
   padding: 14px 16px;
@@ -268,7 +265,6 @@ header {
   box-shadow: 0 0 0 3px rgba(30, 111, 184, .10);
 }
 
-/* Карточка статистики */
 .stats-card {
   background: rgba(255,255,255,.9);
   border: 1px solid rgba(30, 111, 184, .20);
@@ -314,7 +310,6 @@ header {
   color: var(--ink);
 }
 
-/* Карточка графика */
 .chart-card {
   background: rgba(255,255,255,.9);
   border: 1px solid rgba(30, 111, 184, .20);
@@ -357,19 +352,16 @@ header {
   display: block;
 }
 
-/* Boxplot SVG стили */
 .boxplot-line { stroke: var(--blue); stroke-width: 2; fill: none; }
 .boxplot-box { fill: rgba(30, 111, 184, .15); stroke: var(--blue); stroke-width: 2; }
 .boxplot-median { stroke: #dc2626; stroke-width: 3; }
 .boxplot-whisker { stroke: var(--blue); stroke-width: 1.5; }
 .boxplot-outlier { fill: #dc2626; }
 
-/* Гистограмма Canvas */
 .hist-bar { fill: var(--blue); opacity: .85; }
 .hist-axis { stroke: rgba(11, 18, 32, .3); stroke-width: 1; }
 .hist-label { font-size: 10px; fill: rgba(11, 18, 32, .5); }
 
-/* Footer аналитики */
 .analytics-footer {
   display: flex;
   gap: 8px;
@@ -387,7 +379,6 @@ header {
   color: #0f172a;
 }
 
-/* Placeholder когда ничего не выбрано */
 .analytics-placeholder {
   text-align: center;
   padding: 50px 20px;
@@ -404,7 +395,6 @@ header {
   opacity: .35;
 }
 
-/* Адаптивность для кнопок */
 @media (max-width: 700px) {
   .panel-footer {
     flex-direction: column;
@@ -448,7 +438,7 @@ header {
 
     <div class="header-actions">
       <a class="btn" href="/constructor">Конструктор</a>
-      <a class="btn primary" href="/profile">Войти</a>
+      <a class="btn primary" href="/login?next=/profile">Войти</a>
     </div>
 
     <label class="menu-btn" for="menu"><i></i></label>
@@ -466,13 +456,9 @@ header {
             Детальная настройка каждого шага пайплайна: предобработка, кодирование, шкалирование и выбор модели.
           </p>
         </div>
-        <div class="badge" style="background:#0e3b24; color:#7dffb3;">
-          STEP 1–5 · MANUAL CONFIGURATION
-        </div>
       </div>
     
       <div class="manual-slides" id="manualSlides" data-step="1">
-        <!-- SLIDE 1: Обзор данных -->
         <div class="manual-slide active" data-step="1" aria-hidden="false">
           <div class="layout">
             <div class="panel">
@@ -481,10 +467,8 @@ header {
                   <div class="panel-title">Обзор данных</div>
                   <div class="panel-subtitle">Первые строки и базовая статистика по датасету.</div>
                 </div>
-                <div class="panel-badge">Dataset preview</div>
               </div>
 
-              <!-- Dropzone для загрузки -->
               <div class="ml-dropzone" id="mlDropZone">
                 <input type="file" id="mlFileInput" accept=".csv,.txt,.xlsx,.xls" hidden />
                 <div class="ml-dropzone-icon"> </div>
@@ -503,9 +487,13 @@ header {
               </div>
 
               <div class="dataset-meta">
-                <div class="dataset-chip"><strong>Файл:</strong> <span id="currentFileName">customer_scoring.csv</span></div>
-                <div class="dataset-chip"><strong>Shape:</strong> <span id="currentShape">(120 000, 42)</span></div>
-                <div class="dataset-chip"><strong>Target:</strong> <span id="currentTarget">default_flag</span></div>
+                <div class="dataset-chip"><strong>Файл:</strong> <span id="currentFileName">—</span></div>
+                <div class="dataset-chip"><strong>Shape:</strong> <span id="currentShape">(—, —)</span></div>
+                <div class="dataset-chip"><strong>Target:</strong>
+                  <select id="targetSelect" style="border:none;background:transparent;font-size:13px;color:var(--blue);cursor:pointer;padding:2px;min-width:120px;">
+                    <option value="">— выберите —</option>
+                  </select>
+                </div>
               </div>
 
               <div class="tabs" id="dataTabs">
@@ -530,41 +518,19 @@ header {
                   </table>
                 </div>
                 <div class="tab-pane" data-tab-content="shape">
-                  <pre class="code-block" id="shapeContent">(120000, 42)</pre>
+                  <pre class="code-block" id="shapeContent">Данные не загружены</pre>
                 </div>
                 <div class="tab-pane" data-tab-content="info">
-                  <pre class="code-block" id="infoContent">&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 120000 entries, 0 to 119999
-Data columns (total 42 columns):
-#   Column         Non-Null Count   Dtype
----  ------         --------------   -----
-0   customer_id    120000 non-null  object
-1   age            119872 non-null  float64
-2   income         118954 non-null  float64
-3   region         120000 non-null  object
-...
-41  default_flag   120000 non-null  int64</pre>
+                  <pre class="code-block" id="infoContent">Данные не загружены</pre>
                 </div>
                 <div class="tab-pane" data-tab-content="describe">
-                  <pre class="code-block" id="describeContent">           age        income     limit_used
-count  119872.0  118954.0  120000.00
-mean       39.7   78000.3       0.41
-std        11.6   26500.7       0.23
-min        18.0   15000.0       0.00
-25%        30.0   58000.0       0.25
-50%        39.0   76000.0       0.40
-75%        48.0   94000.0       0.56
-max        75.0  250000.0       1.00</pre>
+                  <pre class="code-block" id="describeContent">Данные не загружены</pre>
                 </div>
                 <div class="tab-pane" data-tab-content="isna">
-                  <pre class="code-block" id="isnaContent">age             128
-income         1046
-...
-dtype: int64</pre>
+                  <pre class="code-block" id="isnaContent">Данные не загружены</pre>
                 </div>
                 <div class="tab-pane" data-tab-content="dup">
-                  <pre class="code-block" id="dupContent">df.duplicated().sum()  # 0
-df.duplicated(subset=['customer_id']).sum()  # 12</pre>
+                  <pre class="code-block" id="dupContent">Данные не загружены</pre>
                 </div>
               </div>
 
@@ -573,7 +539,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   <div class="panel-title">Boxplot и диапазоны значений</div>
                   <div class="panel-subtitle">Настройка усечения выбросов по ключевым числовым полям.</div>
                 </div>
-                <div class="panel-badge">Outliers</div>
               </div>
 
               <div class="card">
@@ -582,17 +547,15 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                     <div>
                       <div class="field-label">Поле</div>
                       <select id="outlierField1">
-                        <option>income</option>
-                        <option>age</option>
-                        <option>limit_used</option>
+                        <option>Не выбрано</option>
                       </select>
                     </div>
                     <div>
-                      <div class="field-label">Минимум (ниже → усечь)</div>
+                      <div class="field-label">Минимальное значение</div>
                       <input type="number" id="outlierMin1" placeholder="например, 10 000" />
                     </div>
                     <div>
-                      <div class="field-label">Максимум (выше → усечь)</div>
+                      <div class="field-label">Максимальное значение</div>
                       <input type="number" id="outlierMax1" placeholder="например, 200 000" />
                     </div>
                   </div>
@@ -600,38 +563,34 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                     <div>
                       <div class="field-label">Поле</div>
                       <select id="outlierField2">
-                        <option>age</option>
-                        <option>income</option>
-                        <option>limit_used</option>
+                        <option>Не выбрано</option>
                       </select>
                     </div>
                     <div>
-                      <div class="field-label">Минимум</div>
+                      <div class="field-label">Минимальное значение</div>
                       <input type="number" id="outlierMin2" placeholder="18" />
                     </div>
                     <div>
-                      <div class="field-label">Максимум</div>
+                      <div class="field-label">Максимальное значение</div>
                       <input type="number" id="outlierMax2" placeholder="75" />
                     </div>
                   </div>
                 </div>
-                <div class="boxplot-preview">
-                  Мок-превью boxplot: здесь в реальном интерфейсе будут распределения и whiskers.
+                <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+                  <button id="applyOutliersBtn" class="btn primary" style="white-space:nowrap;">Применить усечение</button>
+                  <span id="outlierStatus" style="font-size:12px;color:rgba(11,18,32,.55);"></span>
                 </div>
               </div>
             </div>
 
-            <!-- RIGHT: Аналитика и графики -->
             <div class="mock-dashboard" aria-label="Аналитика данных">
               <div class="mock-dashboard__inner">
                 
-                <!-- Placeholder до загрузки данных -->
                 <div class="analytics-placeholder" id="analyticsPlaceholder">
                   <div class="analytics-placeholder-icon"> </div>
                   <div>Загрузите датасет для анализа</div>
                 </div>
 
-                <!-- Выбор колонки для анализа -->
                 <div class="analytics-header" id="analyticsHeader" style="display:none;">
                   <div class="field-label">Выберите параметр для анализа</div>
                   <select id="analyticsColumn" class="analytics-select">
@@ -639,7 +598,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   </select>
                 </div>
 
-                <!-- Статистика по выбранной колонке -->
                 <div class="stats-card" id="statsCard">
                   <div class="stats-grid">
                     <div class="stat-item"><span class="stat-label">Среднее</span><span class="stat-value" id="statMean">—</span></div>
@@ -653,7 +611,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   </div>
                 </div>
 
-                <!-- Boxplot -->
                 <div class="chart-card" id="boxplotCard" style="display:none;">
                   <div class="chart-title">Boxplot <span id="boxplotColumn" class="chart-subtitle"></span></div>
                   <div class="chart-container">
@@ -661,7 +618,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   </div>
                 </div>
 
-                <!-- Гистограмма -->
                 <div class="chart-card" id="histCard" style="display:none;">
                   <div class="chart-title">Распределение <span id="histColumn" class="chart-subtitle"></span></div>
                   <div class="chart-container">
@@ -669,7 +625,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   </div>
                 </div>
 
-                <!-- Тип переменной -->
                 <div class="analytics-footer" id="analyticsFooter" style="display:none;">
                   <span class="badge-small" id="varTypeBadge">Тип: —</span>
                   <span class="badge-small" id="uniqueBadge">Уникальных: —</span>
@@ -680,17 +635,14 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
           </div>
         </div>
 
-        <!-- SLIDE 2: Предобработка + Модель -->
         <div class="manual-slide" data-step="2" aria-hidden="true">
           <div class="layout">
-            <!-- LEFT: preprocessing + encoding -->
             <div class="panel">
               <div class="panel-header">
                 <div>
                   <div class="panel-title">Предобработка данных</div>
                   <div class="panel-subtitle">Заполнение пропусков и удаление дублей.</div>
                 </div>
-                <div class="panel-badge">Preprocessing</div>
               </div>
 
               <div class="two-col">
@@ -704,10 +656,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                     <option value="min">Минимальным значением</option>
                     <option value="max">Максимальным значением</option>
                   </select>
-                  <div class="options-row">
-                    <span class="option-pill">Пример: income → mean</span>
-                    <span class="option-pill">limit_used → 0</span>
-                  </div>
                 </div>
 
                 <div class="card">
@@ -737,7 +685,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   <div class="panel-title">Кодирование & шкалирование</div>
                   <div class="panel-subtitle">Подготовка категорий и масштаба числовых признаков.</div>
                 </div>
-                <div class="panel-badge">Encoding & Scaling</div>
               </div>
 
               <div class="two-col">
@@ -771,14 +718,12 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
               </div>
             </div>
 
-            <!-- RIGHT: models + hparams -->
             <div class="panel">
               <div class="panel-header">
                 <div>
                   <div class="panel-title">Тип модели и гиперпараметры</div>
                   <div class="panel-subtitle">Выбор базового алгоритма и режим подбора параметров.</div>
                 </div>
-                <div class="panel-badge">Models & HParams</div>
               </div>
 
               <div class="model-grid" id="modelGrid">
@@ -786,7 +731,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   <input type="radio" name="modelType" value="linear" class="radio-hidden" checked />
                   <div class="model-name">
                     Линейная модель
-                    <span class="model-tag">Baseline</span>
                   </div>
                   <div class="model-text">
                     Простая, быстрая и хорошо интерпретируемая. Подходит, если эффект признаков примерно линейный.
@@ -797,7 +741,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   <input type="radio" name="modelType" value="trees" class="radio-hidden" />
                   <div class="model-name">
                     Деревья решений / RandomForest
-                    <span class="model-tag">Non-linear</span>
                   </div>
                   <div class="model-text">
                     Захватывают нелинейные зависимости и взаимодействия признаков. Меньше требований к шкалированию.
@@ -808,7 +751,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                   <input type="radio" name="modelType" value="catboost" class="radio-hidden" />
                   <div class="model-name">
                     CatBoost
-                    <span class="model-tag">Production</span>
                   </div>
                   <div class="model-text">
                     Градиентный бустинг с поддержкой категорий. Часто даёт лучший баланс качества и стабильности.
@@ -882,7 +824,31 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
                 </div>
               </div>
 
-              <!-- Блок результата обучения -->
+              <div class="card" style="margin-top:20px;">
+                <div class="card-title">Baseline модель (опционально)</div>
+                <div class="card-sub">Загрузите .pkl файл модели для сравнения с итоговой.</div>
+
+                <label class="ml-dropzone" id="baselineDropZone" style="margin-top:12px; padding:16px;">
+                  <input type="file" id="baselineInput" accept=".pkl" hidden />
+                  <div class="ml-dropzone-title" style="font-size:13px;">↑ Загрузите .pkl файл baseline-модели</div>
+                  <div class="ml-dropzone-desc" style="margin-bottom:0;">sklearn Pipeline / dict</div>
+                </label>
+
+                <div id="baselineError" style="display:none; margin-top:10px; padding:10px 14px; border-radius:10px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; font-size:13px;"></div>
+
+                <div id="baselineInfo" style="display:none; margin-top:10px; padding:14px; border:1px solid var(--line); border-radius:12px; background:#fff;">
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                    <span class="badge-small" style="background:#dcfce7; border-color:#bbf7d0; color:#166534;">Baseline загружена</span>
+                    <button type="button" id="baselineRemoveBtn" style="border:none; background:none; color:#991b1b; cursor:pointer; font-size:12px; text-decoration:underline;">Убрать</button>
+                  </div>
+                  <div style="font-size:13px; line-height:1.7; color:rgba(11,18,32,.75);">
+                    <div><strong>Тип модели:</strong> <span id="baselineModelType">—</span></div>
+                    <div><strong>Гиперпараметры:</strong> <span id="baselineHparams">—</span></div>
+                    <div><strong>Метрики:</strong> <span id="baselineMetrics">—</span></div>
+                  </div>
+                </div>
+              </div>
+
               <div class="training-result" id="trainingResult">
                 <div class="progress-text" id="progressText">Обучение модели...</div>
                 <div class="progress-container">
@@ -913,7 +879,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
           </div>
         </div>
 
-        <!-- NAV ARROW -->
         <div class="manual-nav-row">
           <button class="manual-nav" id="manualSlideBtn" type="button" aria-label="Перелистнуть шаг">
             <svg class="manual-nav__icon" width="30" height="22" viewBox="0 0 30 22" aria-hidden="true">
@@ -928,7 +893,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
   </div>
 </main>
 
-<!-- Лоадер при запуске пайплайна -->
 <div class="loader-overlay hidden" id="loaderOverlay">
   <div class="loader-card">
     <div class="loader-row">
@@ -944,560 +908,6 @@ df.duplicated(subset=['customer_id']).sum()  # 12</pre>
   </div>
 </div>
 
-<script>
-(function () {
-  // ====== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ======
-  let datasetColumns = [];
-  let datasetRows = 0;
-  let currentColumnData = [];
-
-  // ====== ЗАГРУЗКА ДАТАСЕТА ======
-  const dropZone = document.getElementById("mlDropZone");
-  const fileInput = document.getElementById("mlFileInput");
-  const datasetInfo = document.getElementById("mlDatasetInfo");
-  const schemaBadge = document.getElementById("mlSchemaBadge");
-  const datasetMeta = document.getElementById("mlDatasetMeta");
-  const metaFile = document.getElementById("mlMetaFile");
-  const metaShape = document.getElementById("mlMetaShape");
-  const currentFileName = document.getElementById("currentFileName");
-  const currentShape = document.getElementById("currentShape");
-  const tableHead = document.getElementById("tableHead");
-  const tableBody = document.getElementById("tableBody");
-  const shapeContent = document.getElementById("shapeContent");
-  const infoContent = document.getElementById("infoContent");
-
-  // Аналитика
-  const analyticsPlaceholder = document.getElementById("analyticsPlaceholder");
-  const analyticsHeader = document.getElementById("analyticsHeader");
-  const analyticsColumn = document.getElementById("analyticsColumn");
-  const statsCard = document.getElementById("statsCard");
-  const boxplotCard = document.getElementById("boxplotCard");
-  const histCard = document.getElementById("histCard");
-  const analyticsFooter = document.getElementById("analyticsFooter");
-  const boxplotSvg = document.getElementById("boxplotSvg");
-  const histCanvas = document.getElementById("histCanvas");
-  const boxplotColumn = document.getElementById("boxplotColumn");
-  const histColumn = document.getElementById("histColumn");
-  const varTypeBadge = document.getElementById("varTypeBadge");
-  const uniqueBadge = document.getElementById("uniqueBadge");
-  const statMean = document.getElementById("statMean");
-  const statMedian = document.getElementById("statMedian");
-  const statStd = document.getElementById("statStd");
-  const statMin = document.getElementById("statMin");
-  const statQ1 = document.getElementById("statQ1");
-  const statQ3 = document.getElementById("statQ3");
-  const statMax = document.getElementById("statMax");
-  const statNa = document.getElementById("statNa");
-
-  if (dropZone && fileInput) {
-    dropZone.addEventListener("click", () => fileInput.click());
-    dropZone.addEventListener("dragover", e => {
-      e.preventDefault();
-      dropZone.classList.add("drag");
-    });
-    dropZone.addEventListener("dragleave", () => {
-      dropZone.classList.remove("drag");
-    });
-    dropZone.addEventListener("drop", e => {
-      e.preventDefault();
-      dropZone.classList.remove("drag");
-      handleFile(e.dataTransfer.files[0]);
-    });
-    fileInput.addEventListener("change", e => {
-      handleFile(e.target.files[0]);
-    });
-  }
-
-  function handleFile(file) {
-    if (!file) return;
-    const ext = file.name.split(".").pop().toLowerCase();
-    if (ext === "csv" || ext === "txt") {
-      Papa.parse(file, {
-        header: true,
-        preview: 50,
-        complete: res => {
-          datasetColumns = res.meta.fields || [];
-          datasetRows = res.data.length;
-          updateDatasetUI(file, datasetRows);
-          updatePreviewTable(res.data, datasetColumns);
-          updateAnalyticsColumns(datasetColumns);
-        },
-        error: err => {
-          console.error("CSV parse error:", err);
-          alert("Ошибка при чтении CSV файла");
-        }
-      });
-    }
-    if (ext === "xlsx" || ext === "xls") {
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const wb = XLSX.read(e.target.result, { type: "binary" });
-          const sheet = wb.Sheets[wb.SheetNames[0]];
-          const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-          datasetColumns = data[0] || [];
-          datasetRows = data.length - 1;
-          updateDatasetUI(file, datasetRows);
-          updatePreviewTable(data.slice(1, 51), datasetColumns);
-          updateAnalyticsColumns(datasetColumns);
-        } catch (err) {
-          console.error("XLSX parse error:", err);
-          alert("Ошибка при чтении Excel файла");
-        }
-      };
-      reader.readAsBinaryString(file);
-    }
-  }
-
-  function updateDatasetUI(file, rows) {
-    datasetInfo.classList.add("visible");
-    schemaBadge.classList.add("visible");
-    datasetMeta.classList.add("visible");
-    currentFileName.textContent = file.name;
-    currentShape.textContent = `(${rows.toLocaleString()}, ${datasetColumns.length})`;
-    metaFile.innerHTML = `<strong>Файл:</strong> ${file.name}`;
-    metaShape.innerHTML = `<strong>Shape:</strong> (${rows.toLocaleString()}, ${datasetColumns.length})`;
-    // Показываем аналитику
-    analyticsPlaceholder.style.display = "none";
-    analyticsHeader.style.display = "block";
-  }
-
-  function updatePreviewTable(data, columns) {
-    if (!tableHead || !tableBody) return;
-    tableHead.innerHTML = columns.map(col => `<th>${col}</th>`).join("");
-    tableBody.innerHTML = data.slice(0, 5).map(row => {
-      return `<tr>${columns.map(col => `<td>${row[col] !== undefined ? row[col] : ""}</td>`).join("")}</tr>`;
-    }).join("");
-    shapeContent.textContent = `(${datasetRows}, ${datasetColumns.length})`;
-    infoContent.textContent = `<class 'pandas.core.frame.DataFrame'>
-RangeIndex: ${datasetRows} entries
-Data columns (total ${datasetColumns.length} columns):
-${columns.slice(0, 10).map((col, i) => `${i}   ${col}    non-null  object`).join("\n")}
-...`;
-  }
-
-  // ====== АНАЛИТИКА: Обновление списка колонок ======
-  function updateAnalyticsColumns(columns) {
-    if (!analyticsColumn) return;
-    analyticsColumn.innerHTML = '<option value="">— выберите колонку —</option>';
-    columns.forEach(col => {
-      const opt = document.createElement("option");
-      opt.value = col;
-      opt.textContent = col;
-      analyticsColumn.appendChild(opt);
-    });
-  }
-
-  // ====== АНАЛИТИКА: Выбор колонки ======
-  if (analyticsColumn) {
-    analyticsColumn.addEventListener("change", e => {
-      const col = e.target.value;
-      if (!col || !datasetColumns.includes(col)) {
-        resetAnalytics();
-        return;
-      }
-      analyzeColumn(col);
-    });
-  }
-
-  function resetAnalytics() {
-    statsCard.classList.remove("visible");
-    boxplotCard.style.display = "none";
-    histCard.style.display = "none";
-    analyticsFooter.style.display = "none";
-    if (boxplotSvg) boxplotSvg.innerHTML = "";
-    if (histCanvas) histCanvas.getContext("2d").clearRect(0, 0, 400, 180);
-  }
-
-  function analyzeColumn(colName) {
-    const rows = Array.from(tableBody.querySelectorAll("tr"));
-    const colIndex = datasetColumns.indexOf(colName);
-    if (colIndex === -1) return;
-
-    currentColumnData = rows.map(row => {
-      const cell = row.children[colIndex];
-      const val = cell?.textContent?.trim();
-      return val !== undefined && val !== "" ? val : null;
-    }).filter(v => v !== null);
-
-    const isNumeric = currentColumnData.every(v => !isNaN(parseFloat(v)) && isFinite(v));
-    varTypeBadge.textContent = `Тип: ${isNumeric ? "числовой" : "категориальный"}`;
-    uniqueBadge.textContent = `Уникальных: ${new Set(currentColumnData).size}`;
-
-    statsCard.classList.add("visible");
-    boxplotCard.style.display = "block";
-    histCard.style.display = "block";
-    analyticsFooter.style.display = "flex";
-    boxplotColumn.textContent = `· ${colName}`;
-    histColumn.textContent = `· ${colName}`;
-
-    if (isNumeric) {
-      const nums = currentColumnData.map(v => parseFloat(v)).filter(n => !isNaN(n));
-      calculateNumericStats(nums);
-      drawBoxplot(nums, boxplotSvg);
-      drawHistogram(nums, histCanvas);
-    } else {
-      calculateCategoricalStats(currentColumnData);
-      drawCategoricalChart(currentColumnData, histCanvas);
-      if (boxplotSvg) {
-        boxplotSvg.innerHTML = '<text x="200" y="90" text-anchor="middle" fill="rgba(11,18,32,.4)" font-size="11">Boxplot только для числовых</text>';
-      }
-    }
-  }
-
-  // ====== Статистика числовых ======
-  function calculateNumericStats(data) {
-    if (data.length === 0) return;
-    const sorted = [...data].sort((a,b) => a-b);
-    const n = sorted.length;
-    const mean = data.reduce((a,b) => a+b, 0) / n;
-    const median = n % 2 === 0 ? (sorted[n/2 - 1] + sorted[n/2]) / 2 : sorted[Math.floor(n/2)];
-    const variance = data.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / n;
-    const std = Math.sqrt(variance);
-    const q1 = sorted[Math.floor(n * 0.25)];
-    const q3 = sorted[Math.floor(n * 0.75)];
-    const min = sorted[0];
-    const max = sorted[n-1];
-
-    statMean.textContent = mean.toFixed(2);
-    statMedian.textContent = median.toFixed(2);
-    statStd.textContent = std.toFixed(2);
-    statMin.textContent = min.toFixed(2);
-    statQ1.textContent = q1.toFixed(2);
-    statQ3.textContent = q3.toFixed(2);
-    statMax.textContent = max.toFixed(2);
-    statNa.textContent = "0";
-  }
-
-  function calculateCategoricalStats(data) {
-    statMean.textContent = "—";
-    statMedian.textContent = "—";
-    statStd.textContent = "—";
-    statMin.textContent = "—";
-    statQ1.textContent = "—";
-    statQ3.textContent = "—";
-    statMax.textContent = "—";
-    statNa.textContent = "0";
-  }
-
-  // ====== Boxplot SVG ======
-  function drawBoxplot(data, svg) {
-    if (!svg || data.length === 0) return;
-    svg.innerHTML = "";
-    const sorted = [...data].sort((a,b) => a-b);
-    const n = sorted.length;
-    const min = sorted[0];
-    const q1 = sorted[Math.floor(n * 0.25)];
-    const median = sorted[Math.floor(n * 0.5)];
-    const q3 = sorted[Math.floor(n * 0.75)];
-    const max = sorted[n-1];
-    const iqr = q3 - q1;
-    const lowerFence = q1 - 1.5 * iqr;
-    const upperFence = q3 + 1.5 * iqr;
-    const whiskerMin = sorted.find(v => v >= lowerFence) || min;
-    const whiskerMax = sorted.reverse().find(v => v <= upperFence) || max;
-    sorted.reverse();
-    const outliers = sorted.filter(v => v < lowerFence || v > upperFence);
-
-    const padding = 35;
-    const width = 400 - padding * 2;
-    const height = 180 - padding;
-    const range = max - min || 1;
-    const scale = (val) => padding + (1 - (val - min) / range) * height;
-    const ns = "http://www.w3.org/2000/svg";
-
-    const line = document.createElementNS(ns, "line");
-    line.setAttribute("x1", "200");
-    line.setAttribute("x2", "200");
-    line.setAttribute("y1", scale(whiskerMin));
-    line.setAttribute("y2", scale(whiskerMax));
-    line.setAttribute("class", "boxplot-line");
-    svg.appendChild(line);
-
-    const box = document.createElementNS(ns, "rect");
-    box.setAttribute("x", "170");
-    box.setAttribute("y", scale(q3));
-    box.setAttribute("width", "60");
-    box.setAttribute("height", Math.max(scale(q1) - scale(q3), 2));
-    box.setAttribute("class", "boxplot-box");
-    svg.appendChild(box);
-
-    const medianLine = document.createElementNS(ns, "line");
-    medianLine.setAttribute("x1", "170");
-    medianLine.setAttribute("x2", "230");
-    medianLine.setAttribute("y1", scale(median));
-    medianLine.setAttribute("y2", scale(median));
-    medianLine.setAttribute("class", "boxplot-median");
-    svg.appendChild(medianLine);
-
-    const drawWhisker = (y) => {
-      const w = document.createElementNS(ns, "line");
-      w.setAttribute("x1", "185"); w.setAttribute("x2", "215");
-      w.setAttribute("y1", y); w.setAttribute("y2", y);
-      w.setAttribute("class", "boxplot-whisker");
-      svg.appendChild(w);
-    };
-    drawWhisker(scale(whiskerMin));
-    drawWhisker(scale(whiskerMax));
-
-    outliers.forEach(v => {
-      const circle = document.createElementNS(ns, "circle");
-      circle.setAttribute("cx", "200");
-      circle.setAttribute("cy", scale(v));
-      circle.setAttribute("r", "3");
-      circle.setAttribute("class", "boxplot-outlier");
-      svg.appendChild(circle);
-    });
-  }
-
-  // ====== Гистограмма Canvas ======
-  function drawHistogram(data, canvas) {
-    if (!canvas || data.length === 0) return;
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const bins = 12;
-    const min = Math.min(...data);
-    const max = Math.max(...data);
-    const range = max - min || 1;
-    const binWidth = range / bins;
-    const counts = new Array(bins).fill(0);
-    data.forEach(v => {
-      const idx = Math.min(Math.floor((v - min) / binWidth), bins - 1);
-      counts[idx]++;
-    });
-    const maxCount = Math.max(...counts);
-    const padding = 25;
-    const chartWidth = canvas.width - padding * 2;
-    const chartHeight = canvas.height - padding;
-
-    ctx.strokeStyle = "rgba(11,18,32,.25)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padding, padding);
-    ctx.lineTo(padding, canvas.height - padding);
-    ctx.lineTo(canvas.width - padding, canvas.height - padding);
-    ctx.stroke();
-
-    counts.forEach((count, i) => {
-      const x = padding + i * (chartWidth / bins);
-      const barHeight = maxCount > 0 ? (count / maxCount) * chartHeight : 0;
-      const y = canvas.height - padding - barHeight;
-      ctx.fillStyle = "rgba(30, 111, 184, .80)";
-      ctx.fillRect(x + 1, y, chartWidth / bins - 2, barHeight);
-    });
-
-    ctx.fillStyle = "rgba(11,18,32,.45)";
-    ctx.font = "9px sans-serif";
-    ctx.fillText(min.toFixed(1), padding, canvas.height - 8);
-    ctx.fillText(max.toFixed(1), canvas.width - padding - 25, canvas.height - 8);
-  }
-
-  // ====== Категориальный бар-чарт ======
-  function drawCategoricalChart(data, canvas) {
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const counts = {};
-    data.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
-    const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 7);
-    if (entries.length === 0) return;
-    const maxCount = Math.max(...entries.map(e => e[1]));
-    const padding = { top: 15, right: 15, bottom: 45, left: 55 };
-    const chartWidth = canvas.width - padding.left - padding.right;
-    const chartHeight = canvas.height - padding.top - padding.bottom;
-    const barHeight = chartHeight / entries.length - 3;
-
-    ctx.strokeStyle = "rgba(11,18,32,.25)";
-    ctx.beginPath();
-    ctx.moveTo(padding.left, padding.top);
-    ctx.lineTo(padding.left, canvas.height - padding.bottom);
-    ctx.lineTo(canvas.width - padding.right, canvas.height - padding.bottom);
-    ctx.stroke();
-
-    entries.forEach((entry, i) => {
-      const [label, count] = entry;
-      const barWidth = maxCount > 0 ? (count / maxCount) * chartWidth : 0;
-      const y = padding.top + i * (barHeight + 3);
-      ctx.fillStyle = "rgba(30, 111, 184, .80)";
-      ctx.fillRect(padding.left, y, barWidth, barHeight);
-      ctx.fillStyle = "rgba(11,18,32,.65)";
-      ctx.font = "9px sans-serif";
-      ctx.textAlign = "right";
-      const labelText = label.length > 10 ? label.slice(0,10)+"…" : label;
-      ctx.fillText(labelText, padding.left - 6, y + barHeight/2 + 3);
-      ctx.textAlign = "left";
-      ctx.fillText(count, padding.left + barWidth + 5, y + barHeight/2 + 3);
-    });
-  }
-
-  // ====== ОБУЧЕНИЕ МОДЕЛИ ======
-  const runBtn = document.getElementById("runPipelineBtn");
-  const trainingResult = document.getElementById("trainingResult");
-  const progressBar = document.getElementById("progressBar");
-  const progressText = document.getElementById("progressText");
-  const notification = document.getElementById("trainingNotification");
-  const downloadSection = document.getElementById("downloadSection");
-  const downloadLink = document.getElementById("downloadLink");
-  const favoriteBtn = document.getElementById("favoriteBtn");
-
-  if (runBtn) {
-    runBtn.addEventListener("click", async () => {
-      trainingResult.classList.add("visible");
-      notification.classList.remove("visible");
-      downloadSection.classList.remove("visible");
-      favoriteBtn.classList.remove("visible");
-      progressBar.style.width = "0%";
-      progressText.textContent = "Обучение модели...";
-      runBtn.disabled = true;
-      runBtn.textContent = "Обучение...";
-
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 15;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          setTimeout(() => {
-            progressText.textContent = "Модель обучена ✓";
-            notification.classList.add("visible");
-            downloadSection.classList.add("visible");
-            favoriteBtn.classList.add("visible");
-            runBtn.disabled = false;
-            runBtn.textContent = "Запустить обучение";
-          }, 300);
-        }
-        progressBar.style.width = `${Math.min(progress, 100)}%`;
-      }, 200);
-    });
-  }
-
-  if (favoriteBtn) {
-    favoriteBtn.addEventListener("click", () => {
-      alert("Модель добавлена в избранное ✓");
-      favoriteBtn.textContent = "★ В избранном";
-      favoriteBtn.style.background = "rgba(30, 111, 184, .10)";
-    });
-  }
-
-  // ====== ТАБЫ ======
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const tabPanes = document.querySelectorAll(".tab-pane");
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const tab = btn.getAttribute("data-tab");
-      tabButtons.forEach(b => b.classList.toggle("active", b === btn));
-      tabPanes.forEach(p => {
-        p.classList.toggle("active", p.getAttribute("data-tab-content") === tab);
-      });
-    });
-  });
-
-  // ====== КОДИРОВАНИЕ ======
-  const encodingSelect = document.getElementById("encodingType");
-  const encodingDesc = document.getElementById("encodingDesc");
-  function updateEncodingDesc() {
-    if (!encodingSelect || !encodingDesc) return;
-    const v = encodingSelect.value;
-    const descriptions = {
-      onehot: "OneHotEncoder — хорош, когда категорий немного. Каждая категория превращается в отдельную бинарную колонку.",
-      target: "TargetEncoder — усредняет таргет по категориям. Полезен при большом числе категорий, но требует аккуратной валидации.",
-      ordinal: "OrdinalEncoder — просто присваивает числовой код каждой категории. Подходит для деревьев, но может создавать ложный порядок.",
-      hash: "HashingEncoder — вариант для очень больших словарей категорий, когда OneHot становится слишком тяжёлым."
-    };
-    encodingDesc.textContent = descriptions[v] || "";
-  }
-  if (encodingSelect) {
-    encodingSelect.addEventListener("change", updateEncodingDesc);
-    updateEncodingDesc();
-  }
-
-  // ====== ШКАЛИРОВАНИЕ ======
-  const scalingSelect = document.getElementById("scalingType");
-  const scalingDesc = document.getElementById("scalingDesc");
-  function updateScalingDesc() {
-    if (!scalingSelect || !scalingDesc) return;
-    const v = scalingSelect.value;
-    const descriptions = {
-      none: "Без шкалирования — ок для деревьев и бустингов. Линейные модели и kNN могут страдать от разных масштабов признаков.",
-      standard: "StandardScaler — вычитает среднее и делит на стандартное отклонение. Нормально для линейных моделей и логистической регрессии.",
-      minmax: "MinMaxScaler — сжимает значения в диапазон [0, 1]. Полезен для нейросетей и моделей, чувствительных к диапазону.",
-      robust: "RobustScaler — использует медиану и IQR, устойчив к выбросам. Хорош, когда распределения сильно перекошены."
-    };
-    scalingDesc.textContent = descriptions[v] || "";
-  }
-  if (scalingSelect) {
-    scalingSelect.addEventListener("change", updateScalingDesc);
-    updateScalingDesc();
-  }
-
-  // ====== ВЫБОР МОДЕЛИ ======
-  const modelCards = document.querySelectorAll(".model-card");
-  const paramsBlocks = {
-    linear: document.getElementById("params-linear"),
-    trees: document.getElementById("params-trees"),
-    catboost: document.getElementById("params-catboost"),
-  };
-  function setModel(model) {
-    modelCards.forEach(card => {
-      const m = card.getAttribute("data-model");
-      card.classList.toggle("active", m === model);
-    });
-    Object.keys(paramsBlocks).forEach(m => {
-      if (!paramsBlocks[m]) return;
-      paramsBlocks[m].classList.toggle("visible", m === model);
-    });
-  }
-  modelCards.forEach(card => {
-    card.addEventListener("click", () => {
-      const m = card.getAttribute("data-model");
-      setModel(m);
-    });
-  });
-
-  // ====== РЕЖИМ ГИПЕРПАРАМЕТРОВ ======
-  const manualToggle = document.getElementById("manualToggle");
-  const modeAutoPill = document.getElementById("modeAutoPill");
-  function updateManualMode() {
-    if (!manualToggle || !modeAutoPill) return;
-    const manual = manualToggle.checked;
-    modeAutoPill.textContent = manual ? "Auto + manual hints" : "Auto search";
-    const allInputs = document.querySelectorAll(
-      "#params-linear input, #params-linear select, #params-trees input, #params-trees select, #params-catboost input, #params-catboost select"
-    );
-    allInputs.forEach(el => {
-      el.disabled = !manual;
-      el.style.opacity = manual ? "1" : "0.6";
-    });
-  }
-  if (manualToggle) {
-    manualToggle.addEventListener("change", updateManualMode);
-    updateManualMode();
-  }
-
-  // ====== СЛАЙДЫ ======
-  const slidesWrap = document.getElementById("manualSlides");
-  const slideBtn = document.getElementById("manualSlideBtn");
-  function setStep(step) {
-    if (!slidesWrap) return;
-    slidesWrap.setAttribute("data-step", String(step));
-    const slides = slidesWrap.querySelectorAll(".manual-slide");
-    slides.forEach(s => {
-      const isActive = s.getAttribute("data-step") === String(step);
-      s.classList.toggle("active", isActive);
-      s.setAttribute("aria-hidden", isActive ? "false" : "true");
-    });
-  }
-  function getStep() {
-    if (!slidesWrap) return 1;
-    return Number(slidesWrap.getAttribute("data-step") || "1");
-  }
-  if (slidesWrap && slideBtn) {
-    slideBtn.addEventListener("click", () => {
-      const cur = getStep();
-      setStep(cur === 1 ? 2 : 1);
-    });
-    setStep(getStep());
-  }
-})();
-</script>
+<script src="/static/js/manual_learning.js"></script>
 </body>
 </html>

@@ -1,19 +1,9 @@
-/* ========================================
-   СТИЛИ ДЛЯ ЛИЧНОГО КАБИНЕТА
-   ======================================== */
-
 .profile-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/*
-  Profile page layout:
-  The shared layout (.stage) uses a 2-column grid with a right "blank" column.
-  On the profile page this visually shifts all blocks to the left.
-  Override it locally (this file is only included on /profile).
-*/
 .stage {
   grid-template-columns: 1fr;
 }
@@ -68,7 +58,6 @@
   margin: 0 0 16px;
 }
 
-/* Edit Modal */
 .edit-modal-overlay {
   position: fixed;
   inset: 0;
@@ -214,7 +203,6 @@
   color: #dc2626;
 }
 
-/* Main Content */
 .settings-section {
   border: 1px solid var(--line);
   border-radius: 24px;
@@ -302,7 +290,6 @@
   background: rgba(30, 111, 184, .15);
 }
 
-/* Models Section - full width */
 .models-section {
   border: 1px solid var(--line);
   border-radius: 24px;
@@ -490,7 +477,6 @@
   border-color: rgba(220, 38, 38, .30);
 }
 
-/* Security Section (в модалке) */
 .security-item {
   padding: 12px;
   border-radius: 12px;
@@ -521,7 +507,6 @@
   color: rgba(11, 18, 32, .45);
 }
 
-/* Delete Account Section (в модалке) */
 .delete-section {
   margin-top: 32px;
   padding-top: 24px;
@@ -543,7 +528,6 @@
   border-color: rgba(220, 38, 38, .30);
 }
 
-/* Responsive */
 @media (max-width: 1120px) {
   .profile-hero {
     padding: 32px 20px 24px;

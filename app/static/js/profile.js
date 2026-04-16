@@ -1,107 +1,190 @@
-(function() {
-// Модальное окно редактирования
-const openEditModalBtn = document.getElementById('openEditModal');
-const editModalOverlay = document.getElementById('editModalOverlay');
-const closeEditModalBtn = document.getElementById('closeEditModal');
-const cancelEditBtn = document.getElementById('cancelEdit');
+(function () {
+  const grid = document.getElementById("modelsGrid")
+  const countEl = document.getElementById("modelsCount")
+  const emptyState = document.getElementById("emptyState")
+  const fetchOpts = { credentials: "same-origin" }
 
-function openEditModal() {
-  editModalOverlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeEditModal() {
-  editModalOverlay.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-openEditModalBtn.addEventListener('click', openEditModal);
-closeEditModalBtn.addEventListener('click', closeEditModal);
-cancelEditBtn.addEventListener('click', closeEditModal);
-
-// Закрытие модалки по клику вне окна
-editModalOverlay.addEventListener('click', function(e) {
-  if (e.target === editModalOverlay) {
-    closeEditModal();
+  function pluralize(n) {
+    const mod10 = n % 10
+    const mod100 = n % 100
+    if (mod10 === 1 && mod100 !== 11) return n + " модель"
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return n + " модели"
+    return n + " моделей"
   }
-});
 
-// Сохранение профиля
-const saveProfileBtn = document.getElementById('saveProfile');
-saveProfileBtn.addEventListener('click', function() {
-  const name = document.querySelector('.form-input').value;
-  alert(`✅ Профиль успешно обновлён!\nИмя: ${name}`);
-  closeEditModal();
-});
+  function formatDate(iso) {
+    if (!iso) return ""
+    const d = new Date(iso)
+    return d.toLocaleDateString("ru-RU", { day: "numeric", month: "short", year: "numeric" })
+  }
 
-// Быстрые настройки
-const settingCards = document.querySelectorAll('.setting-card');
-settingCards.forEach(card => {
-  card.addEventListener('click', function() {
-    const setting = this.getAttribute('data-setting');
-    if (setting === 'profile') {
-      openEditModal();
-    } else if (setting === 'delete') {
-      if (confirm('⚠️ Это действие необратимо!\nВсе ваши данные, модели и проекты будут удалены.\nВы уверены?')) {
-        if (prompt('Для подтверждения введите "DELETE"') === 'DELETE') {
-          alert('🗑️ Аккаунт будет удалён. Спасибо за использование платформы!');
-        }
+  function renderCard(fav) {
+    const metricsHtml = Object.entries(fav.metrics || {})
+      .map(([k, v]) => `<span class="metric-chip">${k}: ${v}</span>`)
+      .join("")
+
+    const taskTag = fav.task === "classification"
+      ? '<span class="model-tag cls">Классификация</span>'
+      : '<span class="model-tag reg">Регрессия</span>'
+
+    const card = document.createElement("div")
+    card.className = "model-card"
+    card.dataset.favId = fav.fav_id
+    card.innerHTML = `
+      <div class="model-card-header">
+        <div>
+          <div class="model-title">${fav.model_label || fav.model_key || "Модель"}</div>
+          <div class="model-meta">${formatDate(fav.created_at)} · ${fav.filename || ""}</div>
+        </div>
+        ${taskTag}
+      </div>
+      <div class="model-details">
+        <strong>Целевая:</strong> ${fav.target || "—"}<br>
+        <strong>Признаков:</strong> ${(fav.features_used || []).length}
+      </div>
+      <div class="model-metrics">${metricsHtml}</div>
+      <div class="model-actions">
+        <button class="model-action-btn download-btn" title="Скачать .pkl">Скачать</button>
+        <button class="model-action-btn delete" title="Удалить из избранного">Удалить</button>
+      </div>
+    `
+    card.querySelector(".download-btn").onclick = () => {
+      window.location.href = `/download-favorite/${fav.fav_id}`
+    }
+    card.querySelector(".delete").onclick = async () => {
+      if (!confirm("Удалить модель из избранного?")) return
+      try {
+        const resp = await fetch(`/favorite/${fav.fav_id}`, { method: "DELETE", ...fetchOpts })
+        if (!resp.ok) throw new Error()
+        card.remove()
+        updateCount()
+      } catch {
+        alert("Ошибка удаления")
       }
-    } else {
-      alert(`Открытие раздела "${setting}"...`);
     }
-  });
-});
+    return card
+  }
 
-// Кнопки действий с моделями
-const deleteButtons = document.querySelectorAll('.model-action-btn.delete');
-deleteButtons.forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const modelCard = this.closest('.model-card');
-    const modelName = modelCard.querySelector('.model-title').textContent;
-    
-    if (confirm(`Вы уверены, что хотите удалить модель "${modelName}"?`)) {
-      modelCard.style.opacity = '0';
-      setTimeout(() => {
-        modelCard.remove();
-      }, 300);
+  function updateCount() {
+    const cards = grid.querySelectorAll(".model-card")
+    countEl.textContent = pluralize(cards.length)
+    if (emptyState) emptyState.style.display = cards.length ? "none" : "block"
+  }
+
+  async function loadFavorites() {
+    try {
+      const resp = await fetch("/favorites", fetchOpts)
+      if (resp.status === 401) {
+        window.location.href = "/login?next=/profile"
+        return
+      }
+      if (!resp.ok) throw new Error()
+      const data = await resp.json()
+      if (emptyState && data.length) emptyState.style.display = "none"
+      data.forEach(fav => grid.appendChild(renderCard(fav)))
+      updateCount()
+    } catch {
+      if (emptyState) {
+        emptyState.querySelector(".empty-state-title").textContent = "Не удалось загрузить модели"
+        emptyState.querySelector(".empty-state-desc").textContent = "Проверьте подключение к серверу"
+      }
     }
-  });
-});
+  }
 
-// Кнопки скачивания
-const downloadButtons = document.querySelectorAll('.model-action-btn:nth-child(2)');
-downloadButtons.forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const modelCard = this.closest('.model-card');
-    const modelName = modelCard.querySelector('.model-title').textContent;
-    alert(`Скачивание модели "${modelName}" начато...`);
-  });
-});
+  function setMsg(id, text, ok) {
+    const el = document.getElementById(id)
+    if (!el) return
+    el.textContent = text || ""
+    el.className = "account-msg" + (text ? (ok ? " ok" : " err") : "")
+  }
 
-// Кнопки просмотра метрик
-const metricsButtons = document.querySelectorAll('.model-action-btn:first-child');
-metricsButtons.forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const modelCard = this.closest('.model-card');
-    const modelName = modelCard.querySelector('.model-title').textContent;
-    alert(`Открытие детальных метрик для модели "${modelName}"...`);
-  });
-});
+  function apiErr(e, data) {
+    if (typeof data?.detail === "string") return data.detail
+    if (Array.isArray(data?.detail)) return data.detail.map(d => d.msg || d).join("; ")
+    return e.message || "Ошибка"
+  }
 
-// Завершение всех сессий
-const endSessionsBtn = document.querySelector('.security-item + .btn');
-if (endSessionsBtn) {
-  endSessionsBtn.addEventListener('click', function() {
-    if (confirm('Вы уверены, что хотите завершить все активные сессии?')) {
-      alert('✅ Все сессии завершены. Вам нужно будет войти снова.');
+  const formUser = document.getElementById("formChangeUsername")
+  if (formUser) {
+    formUser.onsubmit = async (e) => {
+      e.preventDefault()
+      setMsg("msgUsername", "")
+      try {
+        const body = {
+          new_username: document.getElementById("accNewUsername").value.trim(),
+          password: document.getElementById("accUserPass").value,
+        }
+        const r = await fetch("/api/account/username", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          ...fetchOpts,
+          body: JSON.stringify(body),
+        })
+        const data = await r.json().catch(() => ({}))
+        if (!r.ok) throw new Error(apiErr(new Error(), data))
+        const name = body.new_username
+        const pn = document.getElementById("profileName")
+        const av = document.getElementById("profileAvatar")
+        if (pn) pn.textContent = name
+        if (av) av.textContent = (name[0] || "?").toUpperCase()
+        document.getElementById("accNewUsername").value = ""
+        document.getElementById("accUserPass").value = ""
+        setMsg("msgUsername", "Логин обновлён", true)
+      } catch (err) {
+        setMsg("msgUsername", err.message, false)
+      }
     }
-  });
-}
+  }
 
-// Инициализация
-console.log('Profile page loaded');
-})();
+  const formPass = document.getElementById("formChangePassword")
+  if (formPass) {
+    formPass.onsubmit = async (e) => {
+      e.preventDefault()
+      setMsg("msgPassword", "")
+      try {
+        const r = await fetch("/api/account/password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          ...fetchOpts,
+          body: JSON.stringify({
+            old_password: document.getElementById("accOldPass").value,
+            new_password: document.getElementById("accNewPass").value,
+          }),
+        })
+        const data = await r.json().catch(() => ({}))
+        if (!r.ok) throw new Error(apiErr(new Error(), data))
+        document.getElementById("accOldPass").value = ""
+        document.getElementById("accNewPass").value = ""
+        setMsg("msgPassword", "Пароль обновлён", true)
+      } catch (err) {
+        setMsg("msgPassword", err.message, false)
+      }
+    }
+  }
+
+  const formDel = document.getElementById("formDeleteAccount")
+  if (formDel) {
+    formDel.onsubmit = async (e) => {
+      e.preventDefault()
+      setMsg("msgDelete", "")
+      if (!confirm("Удалить аккаунт без возможности восстановления?")) return
+      try {
+        const r = await fetch("/api/account/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          ...fetchOpts,
+          body: JSON.stringify({
+            password: document.getElementById("accDelPass").value,
+          }),
+        })
+        const data = await r.json().catch(() => ({}))
+        if (!r.ok) throw new Error(apiErr(new Error(), data))
+        window.location.href = "/login?next=/profile"
+      } catch (err) {
+        setMsg("msgDelete", err.message, false)
+      }
+    }
+  }
+
+  loadFavorites()
+})()
