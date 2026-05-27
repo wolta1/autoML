@@ -1,0 +1,61 @@
+@startuml manual_train
+title Диаграмма 5 Алгоритм ручного обучения
+
+start
+
+partition "Опционально: baseline" {
+  if (Нужна baseline-модель?) then (да)
+    :POST /upload-baseline\n(.pkl файл);
+    :Выполнить pickle.loads\nи extract_baseline_info;
+
+    if (Файл baseline корректный?) then (да)
+      :Сохранить baseline_*.pkl;
+      :Получить baseline_id;
+    else (нет)
+      :Вернуть ошибку 400\n«Ошибка формата или содержимого»;
+      stop
+    endif
+
+  else (нет)
+    :Baseline не загружается;
+  endif
+}
+
+:Выбрать параметры пайплайна:\nmissing_strategy, encoding,\nscaling, model_type, outliers, ...;
+
+:POST /manual-train\nmultipart: файл + формы + JSON правил;
+
+if (baseline_id указан\nи файл существует?) then (да)
+  :Передать baseline_path\nв run_manual_pipeline;
+else (нет)
+  :Обучение без baseline;
+endif
+
+:Запустить run_manual_pipeline(...);
+
+if (Пайплайн выполнен успешно?) then (да)
+  :Сформировать JSON\nс результатами обучения;
+
+  partition "Опционально (интерфейс пользователя)" {
+    :Отобразить метрики и сведения о модели;
+    :Скачать обученную модель\nGET /download-model/{model_id};
+    :Скачать отчёт о шагах пайплайна\nGET /download-steps/{model_id};
+    if (Пользователь авторизован?) then (да)
+      :Добавить модель в избранное\nPOST /favorite;
+    else (нет)
+      :Избранное недоступно без авторизации;
+    endif
+  }
+
+else (нет)
+  if (Ошибка ValueError?) then (да)
+    :Вернуть ошибку 422;
+    stop
+  else (нет)
+    :Вернуть ошибку 500;
+    stop
+  endif
+endif
+
+stop
+@enduml

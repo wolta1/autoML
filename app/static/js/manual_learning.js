@@ -1,5 +1,4 @@
 (function () {
-  // ── state ──────────────────────────────────────────────────────────
   let datasetColumns = []
   let datasetRows = 0
   let numericColumns = []
@@ -9,7 +8,6 @@
   let lastTrainResult = null
   let baselineId = null
 
-  // ── DOM refs ───────────────────────────────────────────────────────
   const dropZone = document.getElementById("mlDropZone")
   const fileInput = document.getElementById("mlFileInput")
   const datasetInfo = document.getElementById("mlDatasetInfo")
@@ -28,7 +26,6 @@
   const isnaContent = document.getElementById("isnaContent")
   const dupContent = document.getElementById("dupContent")
 
-  // Analytics
   const analyticsPlaceholder = document.getElementById("analyticsPlaceholder")
   const analyticsHeader = document.getElementById("analyticsHeader")
   const analyticsColumn = document.getElementById("analyticsColumn")
@@ -43,7 +40,6 @@
   const varTypeBadge = document.getElementById("varTypeBadge")
   const uniqueBadge = document.getElementById("uniqueBadge")
 
-  // Training
   const runBtn = document.getElementById("runPipelineBtn")
   const trainingResult = document.getElementById("trainingResult")
   const progressBar = document.getElementById("progressBar")
@@ -54,7 +50,6 @@
   const favoriteBtn = document.getElementById("favoriteBtn")
   const loaderOverlay = document.getElementById("loaderOverlay")
 
-  // ── File upload ────────────────────────────────────────────────────
   if (dropZone && fileInput) {
     dropZone.addEventListener("click", () => fileInput.click())
     dropZone.addEventListener("dragover", e => {
@@ -226,7 +221,6 @@
     })
   }
 
-  // ── Apply outlier clipping ─────────────────────────────────────────
   const applyOutliersBtn = document.getElementById("applyOutliersBtn")
   const outlierStatus = document.getElementById("outlierStatus")
 
@@ -268,7 +262,6 @@
     })
   }
 
-  // ── Analytics: column selection ────────────────────────────────────
   if (analyticsColumn) {
     analyticsColumn.addEventListener("change", e => {
       const col = e.target.value
@@ -336,7 +329,6 @@
     const na = document.getElementById("statNa"); if (na) na.textContent = "0"
   }
 
-  // ── Boxplot SVG ────────────────────────────────────────────────────
   function drawBoxplot(data) {
     if (!boxplotSvg || !data.length) return
     boxplotSvg.innerHTML = ""
@@ -375,7 +367,6 @@
     })
   }
 
-  // ── Histogram Canvas ───────────────────────────────────────────────
   function drawHistogram(data) {
     if (!histCanvas || !data.length) return
     const ctx = histCanvas.getContext("2d")
@@ -424,7 +415,6 @@
     })
   }
 
-  // ── Tabs ───────────────────────────────────────────────────────────
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const tab = btn.getAttribute("data-tab")
@@ -437,7 +427,6 @@
     })
   })
 
-  // ── Encoding description ───────────────────────────────────────────
   const encodingSelect = document.getElementById("encodingType")
   const encodingDesc = document.getElementById("encodingDesc")
   const encDescriptions = {
@@ -452,7 +441,6 @@
     })
   }
 
-  // ── Scaling description ────────────────────────────────────────────
   const scalingSelect = document.getElementById("scalingType")
   const scalingDesc = document.getElementById("scalingDesc")
   const scaleDescriptions = {
@@ -467,7 +455,6 @@
     })
   }
 
-  // ── Model selection ────────────────────────────────────────────────
   const modelCards = document.querySelectorAll(".model-card")
   const paramsBlocks = {
     linear: document.getElementById("params-linear"),
@@ -485,7 +472,6 @@
     card.addEventListener("click", () => setModel(card.getAttribute("data-model")))
   })
 
-  // ── Hyperparameter mode toggle ─────────────────────────────────────
   const manualToggle = document.getElementById("manualToggle")
   const modeAutoPill = document.getElementById("modeAutoPill")
   function updateManualMode() {
@@ -504,7 +490,6 @@
     updateManualMode()
   }
 
-  // ── Slides ─────────────────────────────────────────────────────────
   const slidesWrap = document.getElementById("manualSlides")
   const slideBtn = document.getElementById("manualSlideBtn")
 
@@ -524,7 +509,6 @@
     setStep(getStep())
   }
 
-  // ── Collect all settings ───────────────────────────────────────────
   function getSelectedModel() {
     const checked = document.querySelector('input[name="modelType"]:checked')
     return checked ? checked.value : "linear"
@@ -569,7 +553,6 @@
     return params
   }
 
-  // ── Baseline upload ────────────────────────────────────────────────
   const baselineDropZone = document.getElementById("baselineDropZone")
   const baselineInput = document.getElementById("baselineInput")
   const baselineInfo = document.getElementById("baselineInfo")
@@ -647,7 +630,6 @@
     })
   }
 
-  // ── TRAIN ──────────────────────────────────────────────────────────
   if (runBtn) {
     runBtn.addEventListener("click", async () => {
       if (!currentFile) { alert("Сначала загрузите датасет (шаг 1)"); return }
@@ -757,7 +739,6 @@
     })
   }
 
-  // ── Favorite ───────────────────────────────────────────────────────
   if (favoriteBtn) {
     favoriteBtn.addEventListener("click", async () => {
       if (!lastTrainResult) return
@@ -778,8 +759,12 @@
           })
         })
         if (resp.status === 401) {
-          alert("Войдите в личный кабинет, чтобы сохранять модели в избранное.")
-          window.location.href = "/login?next=/manual-learning"
+          window.showToast?.({
+            type: "info",
+            title: "Требуется вход",
+            message: "Войдите в личный кабинет, чтобы сохранять модели в избранное.",
+            action: { text: "Войти", href: "/login?next=/manual-learning" },
+          })
           return
         }
         const favData = await resp.json().catch(() => ({}))
@@ -787,12 +772,20 @@
           const msg = typeof favData.detail === "string" ? favData.detail : "Ошибка сохранения"
           throw new Error(msg)
         }
-        const fav = favData
-        alert(`Модель добавлена в избранное (ID: ${fav.fav_id})`)
+        window.showToast?.({
+          type: "success",
+          title: "Модель добавлена в избранное",
+          message: "Вы можете найти её в личном кабинете и при необходимости скачать или удалить.",
+          action: { text: "Перейти", href: "/profile" },
+        })
         favoriteBtn.textContent = "★ В избранном"
         favoriteBtn.style.background = "rgba(30,111,184,.10)"
       } catch (e) {
-        alert(e.message || "Ошибка сохранения в избранное")
+        window.showToast?.({
+          type: "error",
+          title: "Не удалось сохранить",
+          message: e.message || "Ошибка сохранения в избранное",
+        })
       }
     })
   }

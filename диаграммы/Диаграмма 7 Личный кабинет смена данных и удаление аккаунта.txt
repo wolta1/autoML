@@ -1,0 +1,29 @@
+@startuml account_settings
+title Диаграмма 7 Личный кабинет: смена данных и удаление аккаунта
+
+start
+
+:Пользователь авторизован;
+
+partition "Смена имени" {
+  :POST /api/account/username\n{new_username, password};
+  if (Успех?) then (да)
+    :Обновить session["username"];
+  else (нет)
+    :400 detail;
+  endif
+}
+
+partition "Смена пароля" {
+  :POST /api/account/password\n{old_password, new_password};
+}
+
+partition "Удаление аккаунта" {
+  :POST /api/account/delete\n{password};
+  if (Успех?) then (да)
+    :session.clear();
+  endif
+}
+
+stop
+@enduml

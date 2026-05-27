@@ -1,0 +1,64 @@
+@startuml auth_sequence
+skinparam sequenceMessageAlign center
+
+title Диаграмма 3 Авторизация: регистрация и вход
+
+actor "Пользователь" as U
+participant "Браузер" as B
+participant "FastAPI\n(main.py)" as API
+participant "users_service" as US
+participant "auth_utils\n(bcrypt)" as AU
+database "PostgreSQL" as DB
+
+== Регистрация ==
+U -> B : Заполнить форму регистрации
+B -> API : POST /api/register\n{username, password}
+API -> US : create_user(...)
+US -> AU : hash_password(password)\n(gensalt → соль внутри хеша)
+AU --> US : password_hash
+US -> DB : INSERT username,\npassword_hash
+US --> API : user | ошибка
+alt успех
+  API -> API : session["user_id"] = user.id
+  API --> B : 200 {ok, username}
+else ошибка (занят логин и т.п.)
+  API --> B : 400 detail
+end
+
+== Вход ==
+U -> B : Заполнить форму входа
+B -> API : POST /api/login\n{username, password}
+API -> US : authenticate(...)
+US -> DB : SELECT user по username
+DB --> US : password_hash
+US -> AU : verify_password(password,\npassword_hash)
+AU --> US : да / нет
+US --> API : user | ошибка
+alt успех
+  API -> API : session["user_id"], session["username"]
+  API --> B : 200 {ok, username}
+else неверные данные
+  API --> B : 401 detail
+end
+
+note across
+  Пароль в открытом виде в БД не хранится.
+  Соль задаётся при hash_password и входит в строку bcrypt-хеша.
+end note
+
+== Текущий пользователь ==
+B -> API : GET /api/me\n(cookie сессии)
+alt авторизован
+  API -> US : get_user_by_id
+  US -> DB : SELECT
+  API --> B : 200 {id, username}
+else нет сессии / пользователь удалён
+  API --> B : 401
+end
+
+== Выход ==
+B -> API : POST /api/logout
+API -> API : session.clear()
+API --> B : 200 {ok}
+
+@enduml

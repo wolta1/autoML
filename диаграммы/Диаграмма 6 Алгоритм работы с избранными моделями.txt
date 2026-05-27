@@ -1,0 +1,31 @@
+@startuml favorites
+title Диаграмма 6 Алгоритм работы с избранными моделями
+
+actor "Пользователь" as U
+participant "profile.js\n(браузер)" as JS
+participant "FastAPI" as API
+participant "storage.add_favorite /\nlist_favorites" as ST
+
+U -> JS : Открыть /profile
+JS -> API : GET /favorites\ncredentials: same-origin
+alt 401
+  API --> JS : 401
+  JS -> JS : location = /login?next=/profile
+else 200
+  API -> ST : list_favorites(user_id)
+  ST --> API : список записей
+  API --> JS : JSON массив
+  JS -> U : Карточки моделей
+end
+
+U -> JS : «Скачать»
+JS -> API : GET /download-favorite/{fav_id}
+
+U -> JS : «Удалить»
+JS -> API : DELETE /favorite/{fav_id}
+
+note right of API
+  POST /favorite вызывается после успешного обучения\nиз UI авт/ручного режима (если пользователь вошёл).
+end note
+
+@enduml

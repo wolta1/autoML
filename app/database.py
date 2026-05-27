@@ -1,7 +1,3 @@
-"""
-PostgreSQL connection + SQLAlchemy ORM models.
-"""
-
 import os
 from datetime import datetime
 
@@ -95,7 +91,6 @@ def init_db():
 
 
 def migrate_schema():
-    """Добавить user_id в favorites, если таблица уже была без колонки."""
     import logging
     log = logging.getLogger("automl.database")
     try:

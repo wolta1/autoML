@@ -1,7 +1,3 @@
-"""
-Хеширование паролей (bcrypt). В БД хранится только hash, не plaintext.
-"""
-
 import re
 
 import bcrypt

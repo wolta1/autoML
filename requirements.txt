@@ -11,3 +11,4 @@ sqlalchemy
 psycopg2-binary
 boto3
 bcrypt
+cloudpickle

@@ -79,7 +79,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Nav */
     .menu-toggle{ display:none; }
     nav{
       display:flex;
@@ -146,7 +145,6 @@
       box-shadow: 0 14px 28px rgba(30,111,184,.20);
     }
 
-    /* Burger */
     .menu-btn{
       display:none;
       width: 42px;

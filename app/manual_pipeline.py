@@ -1,17 +1,5 @@
-"""
-Настраиваемый ML-пайплайн для ручного обучения.
-Пользователь выбирает: обработку выбросов, стратегию пропусков, дубли,
-кодирование, шкалирование, модель, гиперпараметры или автоподбор через Optuna.
-
-Результат — sklearn Pipeline внутри dict.  Загрузка::
-
-    import pickle, pandas as pd
-    with open("model_xxx.pkl", "rb") as f:
-        data = pickle.load(f)
-    preds = data["pipeline"].predict(pd.read_csv("new.csv"))
-"""
-
 import uuid
+import json
 import pickle
 import logging
 import numpy as np
@@ -44,13 +32,12 @@ except ImportError:
     OPTUNA_AVAILABLE = False
 
 from .pipeline import (
-    MODEL_LABELS,
+    MODEL_LABELS, REPORTS_DIR,
     load_dataframe, detect_task, _is_string_dtype,
     _is_id_column, _is_name_column,
 )
 
 logger = logging.getLogger("automl.manual_pipeline")
-
 
 def _clip_outliers(df: pd.DataFrame, rules: list[dict]) -> pd.DataFrame:
     for rule in rules:
@@ -246,7 +233,6 @@ def evaluate_baseline(obj, X_test, y_test, task: str) -> dict:
         "mae": round(float(mean_absolute_error(y_test, y_pred)), 4),
         "rmse": round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
     }
-
 
 
 def _build_num_pipeline(missing_strategy: str, scaling_type: str) -> SkPipeline:
@@ -462,13 +448,91 @@ def run_manual_pipeline(
     )
 
     logger.info("  Пайплайн сохранён в S3: models/%s.pkl", model_id)
-    logger.info("=" * 60)
 
     model_label_map = {
         "linear": "Линейная модель",
         "trees": "RandomForest",
         "catboost": "Градиентный бустинг",
     }
+
+    report_steps = [
+        {
+            "step": "load_dataframe",
+            "filename": filename,
+            "rows": int(df.shape[0]),
+            "cols": int(df.shape[1]),
+        },
+        {
+            "step": "drop_useless_columns",
+            "dropped": dropped_cols,
+        },
+        {
+            "step": "remove_duplicates",
+            "remove_full_duplicates": bool(remove_full_dups),
+            "remove_id_duplicates": bool(remove_id_dups),
+        },
+        {
+            "step": "outlier_clipping",
+            "rules": outlier_rules or [],
+        },
+        {
+            "step": "train_test_split",
+            "train_size": int(len(y_train)),
+            "test_size": int(len(y_test)),
+            "test_fraction": round(float(test_size), 4),
+        },
+        {
+            "step": "preprocess",
+            "scaling": scaling_type,
+            "missing_strategy": missing_strategy,
+            "encoding": encoding_type,
+            "numeric_columns": num_cols,
+            "categorical_columns": cat_cols,
+        },
+        {
+            "step": "hyperparameter_search",
+            "mode": hparam_mode,
+            "best_params": best_params,
+            "optuna_used": hparam_mode == "auto" and OPTUNA_AVAILABLE,
+        },
+        {
+            "step": "fit_model",
+            "model_key": model_type,
+            "model_label": model_label_map.get(model_type, model_type),
+            "model_class": type(model).__name__,
+        },
+        {
+            "step": "evaluate",
+            "task": task,
+            "metrics": metrics,
+        },
+    ]
+
+    if baseline_comparison:
+        report_steps.append({
+            "step": "baseline_comparison",
+            **baseline_comparison,
+        })
+
+    report = {
+        "model_id": model_id,
+        "filename": filename,
+        "target": target,
+        "task": task,
+        "model": type(model).__name__,
+        "model_key": model_type,
+        "source": "manual",
+        "created_at": datetime.now().isoformat(),
+        "steps": report_steps,
+    }
+
+    report_path = REPORTS_DIR / f"{model_id}_steps.json"
+    report_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+    logger.info("  Отчёт сохранён: %s", report_path)
+    logger.info("=" * 60)
 
     result = {
         "model_id": model_id,

@@ -5,14 +5,12 @@ import pickle
 import os
 from pathlib import Path
 from io import BytesIO
-
 from fastapi import FastAPI, Request, UploadFile, File, Form, Body, HTTPException
 from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from pydantic import BaseModel, Field
-
 from .database import init_db
 from .pipeline import run_pipeline, REPORTS_DIR
 from .manual_pipeline import run_manual_pipeline, extract_baseline_info
@@ -43,7 +41,14 @@ app.add_middleware(
     https_only=False,
 )
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+class NoCacheStaticFiles(StaticFiles):
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-cache, must-revalidate"
+        return response
+
+
+app.mount("/static", NoCacheStaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 
@@ -93,8 +98,7 @@ class DeleteAccountBody(BaseModel):
 def on_startup():
     init_db()
     logger.info("PostgreSQL инициализация завершена")
-
-
+    
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -110,7 +114,6 @@ async def login_page(request: Request):
 
 @app.get("/login/")
 async def login_page_trailing_slash(request: Request):
-    """Без завершающего слэша часто 404; редирект с сохранением query (?next=...)."""
     q = request.url.query
     target = "/login" + (f"?{q}" if q else "")
     return RedirectResponse(target, status_code=307)
@@ -144,7 +147,6 @@ async def profile(request: Request):
         "profile.html",
         {"request": request, "username": user.username},
     )
-
 
 
 @app.post("/api/register")
@@ -216,7 +218,6 @@ async def api_delete_account(request: Request, body: DeleteAccountBody):
     return {"ok": True}
 
 
-
 @app.post("/train")
 async def train_model(
     file: UploadFile = File(...),
@@ -243,7 +244,6 @@ async def train_model(
     logger.info("Обучение завершено: model_id=%s, задача=%s",
                 result["model_id"], result["task"])
     return JSONResponse(result)
-
 
 
 BASELINE_DIR = Path("app/_baselines")
@@ -274,7 +274,6 @@ async def upload_baseline(file: UploadFile = File(...)):
 
     info["baseline_id"] = baseline_id
     return JSONResponse(info)
-
 
 
 @app.post("/manual-train")
@@ -338,7 +337,6 @@ async def manual_train(
     return JSONResponse(result)
 
 
-
 @app.get("/download-model/{model_id}")
 async def download_model(model_id: str):
     logger.info("Скачивание модели: %s", model_id)
@@ -363,7 +361,6 @@ async def download_steps(model_id: str):
         media_type="application/json",
         headers={"Content-Disposition": f'attachment; filename="pipeline_steps_{model_id}.json"'},
     )
-
 
 
 @app.post("/favorite")

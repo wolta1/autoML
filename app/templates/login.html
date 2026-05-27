@@ -3,102 +3,282 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Вход — AutoML</title>
-<link rel="stylesheet" href="/static/css/manual_learning.css" />
+<title>Вход и регистрация — Платформа анализа данных</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 <style>
-  body { margin:0; min-height:100vh; display:flex; flex-direction:column; background:#f6f7fb; }
-  .auth-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:32px 16px; }
+  body { background: #f6f7fb; }
+
+  main.auth-main {
+    width: 100%;
+    padding: 40px var(--pad) 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 84px);
+  }
+
+  .auth-stage {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(30,111,184,.10);
+    border: 1px solid rgba(30,111,184,.18);
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: .2px;
+    color: rgba(11,18,32,.86);
+  }
+  .auth-badge .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--blue);
+    box-shadow: 0 0 0 6px rgba(30,111,184,.18);
+  }
+
   .auth-card {
-    width:100%; max-width:420px; background:#fff; border:1px solid var(--line); border-radius:20px;
-    padding:28px 26px 24px; box-shadow:0 12px 40px rgba(10,25,46,.06);
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 32px 30px 26px;
+    box-shadow: 0 18px 44px rgba(10,25,46,.08);
   }
-  .auth-title { font-size:22px; font-weight:800; margin:0 0 6px; color:var(--ink); }
-  .auth-sub { font-size:13px; color:rgba(11,18,32,.55); margin-bottom:20px; }
-  .auth-tabs { display:flex; gap:8px; margin-bottom:20px; }
+
+  .auth-title {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -.2px;
+    color: var(--ink);
+  }
+  .auth-sub {
+    margin: 0 0 22px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(11,18,32,.55);
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+    margin-bottom: 22px;
+    background: rgba(11,18,32,.04);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
   .auth-tab {
-    flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:#fff;
-    font-weight:650; font-size:13px; cursor:pointer; color:rgba(11,18,32,.65);
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    color: rgba(11,18,32,.65);
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
   }
-  .auth-tab.active { border-color:rgba(30,111,184,.35); background:rgba(30,111,184,.08); color:var(--blue); }
-  .auth-panel { display:none; }
-  .auth-panel.active { display:block; }
-  .auth-field { margin-bottom:14px; }
-  .auth-field label { display:block; font-size:12px; font-weight:650; margin-bottom:6px; color:rgba(11,18,32,.7); }
+  .auth-tab:hover { color: rgba(11,18,32,.92); }
+  .auth-tab.active {
+    background: #fff;
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(10,25,46,.06);
+  }
+
+  .auth-panel { display: none; }
+  .auth-panel.active { display: block; }
+
+  .auth-field { margin-bottom: 14px; }
+  .auth-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: rgba(11,18,32,.7);
+  }
   .auth-field input {
-    width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line);
-    font-size:14px; box-sizing:border-box;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    box-sizing: border-box;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color .15s ease, box-shadow .15s ease;
   }
-  .auth-field input:focus { outline:2px solid rgba(30,111,184,.25); border-color:rgba(30,111,184,.35); }
-  .auth-error { display:none; margin-bottom:12px; padding:10px 12px; border-radius:10px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; font-size:13px; }
-  .auth-error.visible { display:block; }
-  .auth-submit { width:100%; margin-top:6px; padding:12px; border-radius:12px; border:none; cursor:pointer;
-    font-weight:700; font-size:14px; background:linear-gradient(180deg, var(--blue), var(--blue2)); color:#fff; }
-  .auth-submit:disabled { opacity:.55; cursor:not-allowed; }
-  .auth-back { display:block; text-align:center; margin-top:18px; font-size:13px; color:var(--blue); }
+  .auth-field input::placeholder { color: rgba(11,18,32,.35); }
+  .auth-field input:focus {
+    outline: none;
+    border-color: rgba(30,111,184,.45);
+    box-shadow: 0 0 0 4px rgba(30,111,184,.12);
+  }
+
+  .auth-hint {
+    font-size: 12px;
+    color: rgba(11,18,32,.55);
+    margin: -4px 0 14px;
+    line-height: 1.45;
+  }
+
+  .auth-error {
+    display: none;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    font-size: 13px;
+  }
+  .auth-error.visible { display: block; }
+
+  .auth-submit {
+    width: 100%;
+    margin-top: 4px;
+    padding: 13px;
+    border-radius: 14px;
+    border: 1px solid rgba(30,111,184,.22);
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 14px;
+    background: linear-gradient(180deg, var(--blue), var(--blue2));
+    color: #fff;
+    box-shadow: 0 14px 28px rgba(30,111,184,.20);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .auth-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 34px rgba(30,111,184,.26);
+  }
+  .auth-submit:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .auth-footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(11,18,32,.55);
+  }
+  .auth-footer a {
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 520px) {
+    .auth-card { padding: 24px 20px 20px; border-radius: 18px; }
+    .auth-title { font-size: 22px; }
+  }
 </style>
 </head>
+
 <body>
 
-<header style="position:relative;">
-  <div class="header-inner" style="max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:20px;">
-    <a href="/" class="brand" style="text-decoration:none;color:inherit;">
+<header>
+  <div class="header-inner">
+    <div class="brand">
       <div class="logo">ML</div>
       <div class="brand-text">
         <strong>Платформа анализа данных</strong>
         <span>Визуальный конструктор ML-пайплайнов</span>
       </div>
-    </a>
-    <nav style="margin-left:auto;display:flex;gap:16px;">
+    </div>
+
+    <input class="menu-toggle" type="checkbox" id="menu" aria-hidden="true" />
+
+    <nav aria-label="Основная навигация">
       <a class="navlink" href="/">Главная</a>
-      <a class="navlink" href="/automatic-learning">Автообучение</a>
       <a class="navlink" href="/manual-learning">Ручное обучение</a>
+      <a class="navlink" href="/automatic-learning">Автоматическое обучение</a>
+      <a class="navlink" href="/constructor">Конструктор</a>
+      <a class="navlink active" href="/login">Личный кабинет</a>
     </nav>
+
+    <div class="header-actions">
+      <a class="btn" href="/">На главную</a>
+      <a class="btn primary" href="/constructor">Открыть конструктор</a>
+    </div>
+
+    <label class="menu-btn" for="menu" aria-label="Открыть меню">
+      <i></i>
+    </label>
   </div>
 </header>
 
-<div class="auth-wrap">
-  <div class="auth-card">
-    <h1 class="auth-title">Личный кабинет</h1>
-    <p class="auth-sub">Войдите или зарегистрируйтесь (логин и пароль).</p>
+<main class="auth-main">
+  <section class="auth-stage" aria-label="Вход и регистрация">
 
-    <div class="auth-tabs">
-      <button type="button" class="auth-tab active" id="tabLogin">Вход</button>
-      <button type="button" class="auth-tab" id="tabReg">Регистрация</button>
+    <div class="auth-badge"><span class="dot"></span> ЛИЧНЫЙ КАБИНЕТ</div>
+
+    <div class="auth-card">
+      <h1 class="auth-title">Добро пожаловать</h1>
+      <p class="auth-sub">
+        Войдите в систему или создайте новую учётную запись, чтобы сохранять обученные модели и работать с избранным.
+      </p>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" id="tabLogin" role="tab" aria-selected="true">Вход</button>
+        <button type="button" class="auth-tab" id="tabReg" role="tab" aria-selected="false">Регистрация</button>
+      </div>
+
+      <div id="authError" class="auth-error" role="alert"></div>
+
+      <div class="auth-panel active" id="panelLogin" role="tabpanel">
+        <form id="formLogin" novalidate>
+          <div class="auth-field">
+            <label for="loginUser">Логин</label>
+            <input id="loginUser" name="username" autocomplete="username" required placeholder="Ваш логин" />
+          </div>
+          <div class="auth-field">
+            <label for="loginPass">Пароль</label>
+            <input id="loginPass" type="password" name="password" autocomplete="current-password" required placeholder="••••••••" />
+          </div>
+          <button type="submit" class="auth-submit" id="btnLogin">Войти</button>
+        </form>
+      </div>
+
+      <div class="auth-panel" id="panelReg" role="tabpanel">
+        <form id="formReg" novalidate>
+          <div class="auth-field">
+            <label for="regUser">Логин</label>
+            <input id="regUser" name="username" autocomplete="username" required placeholder="латиница, цифры, _" />
+          </div>
+          <div class="auth-field">
+            <label for="regPass">Пароль</label>
+            <input id="regPass" type="password" name="password" autocomplete="new-password" required minlength="6" placeholder="не менее 6 символов" />
+          </div>
+          <p class="auth-hint">Пароль хранится в базе данных только в виде криптографического хеша (bcrypt).</p>
+          <button type="submit" class="auth-submit" id="btnReg">Создать аккаунт</button>
+        </form>
+      </div>
     </div>
 
-    <div id="authError" class="auth-error"></div>
-
-    <div class="auth-panel active" id="panelLogin">
-      <form id="formLogin">
-        <div class="auth-field">
-          <label for="loginUser">Логин</label>
-          <input id="loginUser" name="username" autocomplete="username" required />
-        </div>
-        <div class="auth-field">
-          <label for="loginPass">Пароль</label>
-          <input id="loginPass" type="password" name="password" autocomplete="current-password" required />
-        </div>
-        <button type="submit" class="auth-submit" id="btnLogin">Войти</button>
-      </form>
+    <div class="auth-footer">
+      Передумали? <a href="/">Вернуться на главную</a>
     </div>
 
-    <div class="auth-panel" id="panelReg">
-      <form id="formReg">
-        <div class="auth-field">
-          <label for="regUser">Логин</label>
-          <input id="regUser" name="username" autocomplete="username" required placeholder="латиница, цифры, _" />
-        </div>
-        <div class="auth-field">
-          <label for="regPass">Пароль</label>
-          <input id="regPass" type="password" name="password" autocomplete="new-password" required minlength="6" />
-        </div>
-        <button type="submit" class="auth-submit" id="btnReg">Зарегистрироваться</button>
-      </form>
-    </div>
-
-    <a class="auth-back" href="/">← На главную</a>
-  </div>
-</div>
+  </section>
+</main>
 
 <script>
 (function () {
@@ -124,6 +304,11 @@
   const params = new URLSearchParams(window.location.search)
   const nextUrl = safeNext(params.get("next"))
 
+  const tabLogin = document.getElementById("tabLogin")
+  const tabReg = document.getElementById("tabReg")
+  const panelLogin = document.getElementById("panelLogin")
+  const panelReg = document.getElementById("panelReg")
+
   const errEl = document.getElementById("authError")
   function showErr(msg) {
     errEl.textContent = msg
@@ -134,20 +319,23 @@
     errEl.textContent = ""
   }
 
-  document.getElementById("tabLogin").onclick = () => {
-    document.getElementById("tabLogin").classList.add("active")
-    document.getElementById("tabReg").classList.remove("active")
-    document.getElementById("panelLogin").classList.add("active")
-    document.getElementById("panelReg").classList.remove("active")
+  function activate(which) {
+    if (which === "login") {
+      tabLogin.classList.add("active"); tabLogin.setAttribute("aria-selected", "true")
+      tabReg.classList.remove("active"); tabReg.setAttribute("aria-selected", "false")
+      panelLogin.classList.add("active")
+      panelReg.classList.remove("active")
+    } else {
+      tabReg.classList.add("active"); tabReg.setAttribute("aria-selected", "true")
+      tabLogin.classList.remove("active"); tabLogin.setAttribute("aria-selected", "false")
+      panelReg.classList.add("active")
+      panelLogin.classList.remove("active")
+    }
     clearErr()
   }
-  document.getElementById("tabReg").onclick = () => {
-    document.getElementById("tabReg").classList.add("active")
-    document.getElementById("tabLogin").classList.remove("active")
-    document.getElementById("panelReg").classList.add("active")
-    document.getElementById("panelLogin").classList.remove("active")
-    clearErr()
-  }
+
+  tabLogin.onclick = () => activate("login")
+  tabReg.onclick = () => activate("reg")
 
   document.getElementById("formLogin").onsubmit = async (e) => {
     e.preventDefault()
@@ -200,5 +388,6 @@
   }
 })()
 </script>
+
 </body>
 </html>

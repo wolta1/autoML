@@ -1,11 +1,6 @@
-"""
-S3-compatible (MinIO) client for storing .pkl model files.
-"""
-
 import os
 import io
 import logging
-
 import boto3
 from botocore.exceptions import ClientError
 

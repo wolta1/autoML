@@ -1,11 +1,6 @@
-"""
-Storage layer: PostgreSQL for metadata + S3 for .pkl files.
-"""
-
 import uuid
 import logging
 from datetime import datetime
-
 from .database import SessionLocal, TrainedModel, Favorite
 from . import s3_client
 

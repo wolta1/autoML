@@ -1,11 +1,5 @@
-"""
-Регистрация и управление пользователями в PostgreSQL.
-"""
-
 import logging
-
 from sqlalchemy.exc import IntegrityError
-
 from .database import SessionLocal, User
 from .auth_utils import (
     hash_password,

@@ -7,25 +7,12 @@
 
 <link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" href="/static/css/constructor.css">
+<link rel="stylesheet" href="/static/css/toast.css">
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="/static/js/toast.js" defer></script>
 </head>
-
-<div class="modal hidden" id="configModal">
-
-<div class="modal-card">
-
-<div class="modal-header">
-<h3 id="modalTitle">Настройка</h3>
-<button id="closeModal">✕</button>
-</div>
-
-<div class="modal-body" id="modalBody"></div>
-
-<div class="modal-footer">
-<button class="btn primary" id="saveConfig">Сохранить</button>
-</div>
-
-</div>
-</div>
 
 <body>
 
@@ -42,15 +29,15 @@
 
 <nav>
 <a class="navlink" href="/">Главная</a>
-<a class="navlink" href="/automatic-learning">Авто обучение</a>
+<a class="navlink" href="/automatic-learning">Автоматическое обучение</a>
 <a class="navlink" href="/manual-learning">Ручное обучение</a>
 <a class="navlink active" href="/constructor">Конструктор</a>
 <a class="navlink" href="/profile">Личный кабинет</a>
 </nav>
 
 <div class="header-actions">
-<a class="btn primary">Сохранить</a>
-<a class="btn primary" href="/login?next=/profile">Войти</a>
+<button id="clearBtn" class="btn">Очистить</button>
+<button id="runBtn" class="btn primary">Запустить пайплайн</button>
 </div>
 
 </div>
@@ -62,50 +49,59 @@
 
 <div id="pipelineCanvas" class="pipeline-canvas">
 
-<div class="canvas-empty" id="emptyCanvas">
-
-<div class="empty-box" id="addStepBtn">
-<div class="plus">+</div>
-<span>Add first step</span>
-</div>
-
-<div class="or">or</div>
-
-<div class="empty-box ai">
-✨
-<span>Build with AI</span>
-</div>
-
-</div>
-
 <svg id="connections"></svg>
 
+<div class="canvas-empty" id="emptyCanvas">
+
+<div class="empty-box" data-empty-add>
+<div class="plus">+</div>
+<span>Добавить блок</span>
+</div>
+
+<div class="or">или</div>
+
+<div class="empty-box ai" data-empty-add>
+✨
+<span>Перетащите блок справа</span>
 </div>
 
 </div>
 
+</div>
+
+<div class="canvas-hint">
+Перетаскивайте блоки из правой панели на холст. Соединяйте блоки, протянув линию из правого порта <span class="port-demo out"></span> в левый порт <span class="port-demo in"></span>. Двойной клик на линии — удалить связь.
+</div>
+
+</div>
+
+<!-- SIDEBAR -->
 <aside class="node-sidebar">
 
 <h3>Добавить шаг</h3>
 
-<input class="node-search" placeholder="Search nodes..."/>
+<input class="node-search" placeholder="Поиск блока..." id="nodeSearch"/>
 
-<div class="node-group">
+<div class="node-group" id="nodeGroup">
 
 <div class="node-item" draggable="true" data-type="dataset">
-Dataset
+<div class="ni-title">Dataset</div>
+<div class="ni-sub">Загрузка CSV / XLSX и выбор target</div>
 </div>
 
 <div class="node-item" draggable="true" data-type="preprocess">
-Preprocess
+<div class="ni-title">Preprocess</div>
+<div class="ni-sub">Пропуски, шкалирование, кодирование</div>
 </div>
 
 <div class="node-item" draggable="true" data-type="model">
-Model
+<div class="ni-title">Model</div>
+<div class="ni-sub">Линейная, RandomForest, GradientBoosting</div>
 </div>
 
 <div class="node-item" draggable="true" data-type="evaluation">
-Evaluation
+<div class="ni-title">Optuna</div>
+<div class="ni-sub">Подбор гиперпараметров: авто (Optuna) или вручную</div>
 </div>
 
 </div>
@@ -113,6 +109,36 @@ Evaluation
 </aside>
 
 </main>
+
+<div class="modal hidden" id="configModal">
+<div class="modal-card">
+<div class="modal-header">
+<h3 id="modalTitle">Настройка</h3>
+<button class="modal-close" id="closeModal">✕</button>
+</div>
+<div class="modal-body" id="modalBody"></div>
+<div class="modal-footer">
+<button class="btn" id="deleteNode">Удалить блок</button>
+<button class="btn primary" id="saveConfig">Сохранить</button>
+</div>
+</div>
+</div>
+
+<div class="modal hidden" id="runModal">
+<div class="modal-card">
+<div class="modal-header">
+<h3 id="runTitle">Запуск пайплайна</h3>
+<button class="modal-close" id="closeRunModal">✕</button>
+</div>
+<div class="modal-body" id="runBody">
+<div class="run-loader" id="runLoader">
+<div class="spinner"></div>
+<div class="run-status" id="runStatus">Обучение модели, это может занять несколько секунд…</div>
+</div>
+<div class="run-result hidden" id="runResult"></div>
+</div>
+</div>
+</div>
 
 <script src="/static/js/constructor.js"></script>
 </body>

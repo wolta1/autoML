@@ -1,0 +1,11 @@
+.venv
+__pycache__
+.git
+.gitignore
+*.pkl
+*.cpkl
+.cursor
+terminals
+**/_trained_models/**
+**/_reports/**
+**/_favorites/**

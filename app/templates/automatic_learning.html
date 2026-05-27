@@ -7,9 +7,11 @@
 
 <link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" href="/static/css/manual_learning.css">
+<link rel="stylesheet" href="/static/css/toast.css">
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="/static/js/toast.js" defer></script>
 
 <style>
 .btn, .panel-footer .btn {
@@ -98,7 +100,6 @@ header {
               <div class="card-title">Загрузите датасет</div>
               <div class="card-sub">CSV / TXT / XLSX / XLS</div>
             </div>
-            <div class="panel-badge" style="background:#0e3b24!important; color:#7dffb3!important; border:none!important;">ШАГ 1</div>
           </div>
 
           <label id="dropZone" class="ml-dropzone" style="margin-top:12px;">
@@ -122,7 +123,6 @@ header {
               <div class="card-title">Таргет и модель</div>
               <div class="card-sub">Выберите целевую переменную и тип модели</div>
             </div>
-            <div class="panel-badge" style="background:#0e3b24!important; color:#7dffb3!important; border:none!important;">ШАГ 2–3</div>
           </div>
 
           <div class="field-label">Целевая переменная <span class="req">*</span></div>
@@ -133,7 +133,7 @@ header {
 
           <div class="field-label" style="margin-top:20px;">Выбор модели</div>
           <select id="modelSelect">
-            <option value="linear">Линейная регрессия</option>
+            <option value="linear">Линейная модель</option>
             <option value="tree">Деревья решений</option>
             <option value="boosting">Градиентный бустинг</option>
           </select>

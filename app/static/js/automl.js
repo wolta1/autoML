@@ -201,8 +201,12 @@ document.getElementById("favoriteBtn").onclick = async () => {
     })
 
     if (resp.status === 401) {
-      alert("Войдите в личный кабинет, чтобы сохранять модели в избранное.")
-      window.location.href = "/login?next=/automatic-learning"
+      window.showToast?.({
+        type: "info",
+        title: "Требуется вход",
+        message: "Войдите в личный кабинет, чтобы сохранять модели в избранное.",
+        action: { text: "Войти", href: "/login?next=/automatic-learning" },
+      })
       return
     }
     const favData = await resp.json().catch(() => ({}))
@@ -210,9 +214,17 @@ document.getElementById("favoriteBtn").onclick = async () => {
       const msg = typeof favData.detail === "string" ? favData.detail : "Не удалось сохранить"
       throw new Error(msg)
     }
-    const fav = favData
-    alert(`Модель добавлена в избранное (ID: ${fav.fav_id})`)
+    window.showToast?.({
+      type: "success",
+      title: "Модель добавлена в избранное",
+      message: "Вы можете найти её в личном кабинете и при необходимости скачать или удалить.",
+      action: { text: "Перейти", href: "/profile" },
+    })
   } catch (e) {
-    alert(e.message || "Ошибка сохранения в избранное")
+    window.showToast?.({
+      type: "error",
+      title: "Не удалось сохранить",
+      message: e.message || "Ошибка сохранения в избранное",
+    })
   }
 }

@@ -1,7 +1,3 @@
-"""
-ML-пайплайн: загрузка данных -> определение задачи -> очистка -> обучение -> сериализация.
-"""
-
 import re
 import io
 import uuid
@@ -12,7 +8,6 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
-
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline as SkPipeline
@@ -64,7 +59,6 @@ MODEL_LABELS = {
 
 
 def _is_string_dtype(series: pd.Series) -> bool:
-    """Проверка на строковый тип, совместимая с pandas 2.x и 3.x."""
     if series.dtype == object:
         return True
     dtype_str = str(series.dtype).lower()
@@ -176,16 +170,6 @@ def run_pipeline(
     target: str,
     model_key: str,
 ) -> dict:
-    """Автоматический пайплайн.
-
-    Результат — sklearn Pipeline (preprocessor + model) внутри dict.
-    Загрузка и использование::
-
-        import pickle, pandas as pd
-        with open("model_xxx.pkl", "rb") as f:
-            data = pickle.load(f)
-        preds = data["pipeline"].predict(pd.read_csv("new.csv"))
-    """
     import json as _json
 
     steps: list[dict] = []

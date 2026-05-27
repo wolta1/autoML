@@ -1,0 +1,43 @@
+@startuml user_overview
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+
+title Диаграмма 2 Общий алгоритм работы пользователя с приложением
+
+start
+
+:Открыть веб-приложение;
+
+partition "Навигация (публичные страницы)" {
+  :Главная "/";\n(описание, ссылки на режимы);
+  fork
+    :Ручное обучение\n"/manual-learning";
+  fork again
+    :Автообучение\n"/automatic-learning";
+  fork again
+    :Конструктор\n"/constructor";
+  fork again
+    :Личный кабинет\n"/profile";
+  end fork
+}
+
+partition "Личный кабинет /profile" {
+  if (В сессии есть user_id?) then (да)
+    :Показать профиль и избранное;
+  else (нет)
+    :HTTP 302 на\n"/login?next=/profile";
+    detach
+  endif
+}
+
+partition "Экран входа /login" {
+  if (Уже авторизован?) then (да)
+    :HTTP 302 на "/profile";
+    stop
+  else (нет)
+    :Вкладка «Вход» или «Регистрация»;
+  endif
+}
+
+stop
+@enduml

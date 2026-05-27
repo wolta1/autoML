@@ -70,7 +70,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 | `S3_ACCESS_KEY` | `minioadmin` | Ключ доступа MinIO |
 | `S3_SECRET_KEY` | `minioadmin` | Секретный ключ MinIO |
 | `S3_BUCKET` | `automl-models` | Имя бакета для `.pkl` |
-| `SESSION_SECRET` | (встроенный dev-ключ) | Секрет подписи cookie-сессий; |
+| `SESSION_SECRET` | (встроенный dev-ключ) | Секрет подписи cookie-сессий; **в продакшене задайте свой длинный случайный ключ** |
 
 Бакет создаётся автоматически при первом обращении приложения к S3.
 
